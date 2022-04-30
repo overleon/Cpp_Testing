@@ -2,7 +2,7 @@
 #define BLOCKS_H
 
 #include <iostream>
-#include "userBuffer.h"
+#include "../nio/userBuffer.h"
 #include "primeNumbers.h"
 
 using namespace std;

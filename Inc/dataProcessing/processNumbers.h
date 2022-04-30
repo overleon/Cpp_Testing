@@ -2,7 +2,7 @@
 #define PROCESSNUMBER_H
 
 #include <iostream>
-#include "userBuffer.h"
+#include "../nio/userBuffer.h"
 #include "primeNumbers.h"
 #include "blocks.h"
 

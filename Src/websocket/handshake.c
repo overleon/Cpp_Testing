@@ -2,7 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "../../Inc/handshake.h"
+#include "../../Inc/websocket/handshake.h"
 
 void addHandshakeField(handshake_field fields, const char *key, uint32_t key_length, const char *value, uint32_t value_length){
 	handshake_field field = fields->last, new_last;

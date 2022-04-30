@@ -6,18 +6,18 @@
 #include <string.h>
 #include <iostream>
 
-#include "../Inc/systemThreads.h"
-#include "../Inc/userBuffer.h"
+#include "../Inc/dataProcessing/systemThreads.h"
+#include "../Inc/nio/userBuffer.h"
 #include "../Inc/main.h"
-#include "../Inc/primeNumbers.h"
-#include "../Inc/processNumbers.h"
-#include "../Inc/blocks.h"
-#include "../Inc/systemTimer.h"
+#include "../Inc/dataProcessing/primeNumbers.h"
+#include "../Inc/dataProcessing/processNumbers.h"
+#include "../Inc/dataProcessing/blocks.h"
+#include "../Inc/timer/systemTimer.h"
 
 
 #define NUM_THREADS 1
 extern "C" {
-    #include "../Inc/websockh.h"
+    #include "../Inc/websocket/websockh.h"
 }
 
 uint8_t var[] = "{\"a\": 1234566, \"b\": 680929}";

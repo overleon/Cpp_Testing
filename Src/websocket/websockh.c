@@ -1,5 +1,5 @@
-#include "../../Inc/websockh.h"
-#include "../../Inc/handshake.h"
+#include "../../Inc//websocket/websockh.h"
+#include "../../Inc//websocket/handshake.h"
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>

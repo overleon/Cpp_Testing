@@ -1,4 +1,4 @@
-#include "../../Inc/primeNumbers.h"
+#include "../../Inc/dataProcessing/primeNumbers.h"
 #include <primesieve.hpp>
 #include <iostream>
 

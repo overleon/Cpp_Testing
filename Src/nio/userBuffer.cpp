@@ -1,5 +1,5 @@
-#include "../../Inc/userBuffer.h"
-#include "../../Inc/systemThreads.h"
+#include "../../Inc/nio/userBuffer.h"
+#include "../../Inc/dataProcessing/systemThreads.h"
 
 #include <stdio.h>
 #include <pthread.h>

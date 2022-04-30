@@ -1,7 +1,7 @@
-#include "../../Inc/systemThreads.h"
-#include "../../Inc/primeNumbers.h"
-#include "../../Inc/processNumbers.h"
-#include "../../Inc/blocks.h"
+#include "../../Inc/dataProcessing/systemThreads.h"
+#include "../../Inc/dataProcessing/primeNumbers.h"
+#include "../../Inc/dataProcessing/processNumbers.h"
+#include "../../Inc/dataProcessing/blocks.h"
 
 #include <stdio.h>
 #include <pthread.h>

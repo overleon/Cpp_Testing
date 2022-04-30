@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <iostream>
 #include <string>
-#include "userBuffer.h"
+#include "../nio/userBuffer.h"
 #include "primeNumbers.h"
 #include "processNumbers.h"
 #include "blocks.h"

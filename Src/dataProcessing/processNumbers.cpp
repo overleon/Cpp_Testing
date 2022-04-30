@@ -1,5 +1,5 @@
-#include "../../Inc/processNumbers.h"
-#include "../../Inc/blocks.h"
+#include "../../Inc/dataProcessing/processNumbers.h"
+#include "../../Inc/dataProcessing/blocks.h"
 #include <string.h>
 #include <unistd.h>
 

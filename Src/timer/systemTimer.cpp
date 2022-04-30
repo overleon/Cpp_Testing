@@ -1,4 +1,4 @@
-#include "../../Inc/systemTimer.h"
+#include "../../Inc/timer/systemTimer.h"
 #include <sys/time.h> 
 
 void  CSystemTimer::startTimer(void){
