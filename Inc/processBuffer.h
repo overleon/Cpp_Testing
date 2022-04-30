@@ -21,7 +21,10 @@ class CDataProcessing{
 		uint32_t assembleNumber(void);
 		CUserBuffer systemBuffer;
 		CUserBuffer numbersBuffer;
-		CProcessNumber processNumber;	
+		CProcessNumber 	processNumber;
+		CBlock block[100];
+		CBlockHandler *blockHandler;
+
 };
 
 

@@ -47,30 +47,36 @@ class CBlock{
 		void clearBlock(void);
 };
 
+class CBlockHandler{
+	private:
+		uint32_t blockIndex;
+		uint32_t size;
+		CBlock *handler;
+	public:
+		CBlockHandler(CBlock *blocks, uint32_t size);
+		void clearAllTheBlocks(void);
+		void checkBlockIndex(void);
+		uint32_t getIndex(void);
+		void passToNextBlock(void);
+		void showBlocksResult(void);
+};
+
 class CProcessNumber{
     private:    
-		uint8_t blockIndex;
     public:
-
         CProcessNumber();
 
 		CProcessPrimeNumber primeNumbersHandler;
-		CBlock block[100];
 
-		void checkMaximumNumber(uint32_t);
-		void checkMinimumNumber(uint32_t);
-		void checkFirstNumber(uint32_t);
-		void setLastNumber(uint32_t);
-		void checkPrimeNumber(uint32_t);
-		void checkEvenOddNumber(uint32_t);
+		void checkMaximumNumber(uint32_t, CBlock*);
+		void checkMinimumNumber(uint32_t, CBlock*);
+		void checkFirstNumber(uint32_t, CBlock*);
+		void setLastNumber(uint32_t, CBlock*);
+		void checkPrimeNumber(uint32_t, CBlock*);
+		void checkEvenOddNumber(uint32_t, CBlock*);
 
-		uint32_t assembleNextNumberFromBuffer(void);
-		void processNumber(uint32_t number);
+		void processNumber(uint32_t number, CBlock *block);
 
-		void clearAllTheBlocks(void);
-		void checkBlockIndex(void);
-		void passToNextBlock(void);
-		void showBlocksResult(void);
 
 };
 
