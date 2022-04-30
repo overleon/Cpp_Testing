@@ -14,7 +14,6 @@
 #include "../Inc/dataProcessing/blocks.h"
 #include "../Inc/timer/systemTimer.h"
 
-
 #define NUM_THREADS 1
 extern "C" {
     #include "../Inc/websocket/websockh.h"
