@@ -44,7 +44,7 @@ using std::size_t;
 
 #if defined(_WIN32)
 
-#include <primesieve/pmath.hpp>
+#include "../../Inc/primesieve/pmath.hpp"
 
 #include <windows.h>
 #include <iterator>
@@ -401,7 +401,7 @@ void CpuInfo::init()
 
 #elif defined(APPLE_SYSCTL)
 
-#include <primesieve/pmath.hpp>
+#include "../../Inc/primesieve/pmath.hpp"
 
 #include <algorithm>
 #include <cstddef>
