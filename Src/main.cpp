@@ -20,7 +20,6 @@ uint8_t var[] = "{\"a\": 1234566, \"b\": 680929}";
 
 int main () {
 	// CProcessPrimeNumber *processPrimeNumber = new CProcessPrimeNumber();
-	// processPrimeNumber->storePrimeNumbers();
 	// for (uint32_t index = 0; index < UINT32_MAX; index++){
 	// 	processPrimeNumber->checkIfNumberIsPrime(index);
 
@@ -39,14 +38,14 @@ int main () {
 		char *msg = (char *)websockh_recv(ws, &len, &opcode);
 		// cout<<"lenght: "<<len<<endl;
 		// systemBuffer->sendDatatoBuffer(len, (uint8_t*)msg);
-		dataProcessing->saveData(len, (uint8_t*)msg);
+		dataProcessing->systemBuffer.sendDatatoBuffer(len, (uint8_t*)msg);
 		// cout<<"counter: "<<counter++<<endl;
 		// systemBuffer->sendDatatoBuffer(0, (uint8_t*)var);
 		if(counter++ == (6300)){
 
-			while(dataProcessing->getSystemBufferLenght());
-			while(dataProcessing->getNumbersBufferLenght());
-			dataProcessing->showBlocksResult();
+			while(dataProcessing->systemBuffer.isBufferFull());
+			while(dataProcessing->processNumber.numbersBuffer.isBufferFull());
+			dataProcessing->processNumber.showBlocksResult();
 			gettimeofday(&tf, NULL);   // Instante final
 			tiempo= (tf.tv_sec - ti.tv_sec)*1000 + (tf.tv_usec - ti.tv_usec)/1000.0;
 			printf("Has tardado: %g milisegundos\n", tiempo);

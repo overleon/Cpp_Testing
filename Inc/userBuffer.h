@@ -24,7 +24,6 @@ class CUserBuffer{
 		void clearBuffer(void);
 		uint8_t getDataFromBuffer(void);
 		uint32_t isBufferFull(void);
-		void printSomething(void){printf("hello\n");}
 };
 
 #endif

@@ -27,14 +27,7 @@ inline void CDataProcessing::createParsingThread(){
 } 
 
 CDataProcessing::CDataProcessing(){
-    systemBuffer = new CUserBuffer();
-    processNumber = new ProccesNumber();
     createParsingThread();
-}
-
-
-void CDataProcessing::saveData(uint32_t lenght, uint8_t *data){
-    systemBuffer->sendDatatoBuffer(lenght, data);
 }
 
 void* pthreadGetBValues(void *arg) {
@@ -42,22 +35,22 @@ void* pthreadGetBValues(void *arg) {
     static volatile uint32_t bCounter = 0;
     uint8_t numberInString[10] = {0};
     while(1){
-        while(handler->getSystemBufferLenght()){
-            uint8_t character = handler->getNextDataFromSystemBuffer();    
+        while(handler->systemBuffer.isBufferFull()){
+            uint8_t character = handler->systemBuffer.getDataFromBuffer();    
             if(character == 'b'){
-                character = handler->getNextDataFromSystemBuffer();//---- "
-                character = handler->getNextDataFromSystemBuffer();//---- :
-                character = handler->getNextDataFromSystemBuffer();//---- space
-                character = handler->getNextDataFromSystemBuffer();//---- firstNumber
+                character = handler->systemBuffer.getDataFromBuffer();//---- "
+                character = handler->systemBuffer.getDataFromBuffer();//---- :
+                character = handler->systemBuffer.getDataFromBuffer();//---- space
+                character = handler->systemBuffer.getDataFromBuffer();//---- firstNumber
                 unsigned char index = 0;//Variable to protect the system againt an infinity loop
                 while((character >= '0' && character <= '9') && index < 10){
                     numberInString[index] = character; 
-                    character = handler->getNextDataFromSystemBuffer();
+                    character = handler->systemBuffer.getDataFromBuffer();
                     index++;
                 }
                 if( numberInString[0] >= '0' && numberInString[0] <= '9'){
                     uint32_t number = (uint32_t)strtoul((const char*)numberInString, NULL, 0 );
-                    handler->sendNumberToNumbersBuffer(number);
+                    handler->processNumber.numbersBuffer.sendDatatoBuffer( sizeof(uint32_t), (uint8_t*)&number);
                     memset(numberInString, 0x00, 11);
                     // cout<<"Number: "<<number<<endl;
                     bCounter++;
@@ -68,34 +61,5 @@ void* pthreadGetBValues(void *arg) {
     pthread_exit(NULL);
 }
 
-uint8_t CDataProcessing::getNextDataFromSystemBuffer(void){
-    return systemBuffer->getDataFromBuffer();
-}
-
-uint32_t CDataProcessing::getSystemBufferLenght(void){
-    return systemBuffer->isBufferFull();
-}
-
-uint32_t CDataProcessing::getNumbersBufferLenght(void){
-    return processNumber->numbersBuffer->isBufferFull();
-}
-
-void CDataProcessing::sendNumberToNumbersBuffer(uint32_t number){
-    processNumber->addNumberToQueue(number);
-}
-
-void CDataProcessing::showBlocksResult(void){
-	for(uint8_t index = 0; index < 100; index++){
-		cout<<"Maximum number: 	"<<processNumber->block[index].max_number<<endl;
-		cout<<"Minimum number: 	"<<processNumber->block[index].min_number<<endl;
-		cout<<"First number:   	"<<processNumber->block[index].first_number<<endl;
-		cout<<"Last number:    	"<<processNumber->block[index].last_number<<endl;
-		cout<<"Number of primes: 	"<<processNumber->block[index].number_of_prime_numbers<<endl;
-		cout<<"Number of evens: 	"<<processNumber->block[index].number_of_even_numbers<<endl;
-		cout<<"Number of odds: 	"<<processNumber->block[index].number_of_odd_numbers<<endl;
-		cout<<"-----------------------------------------------"<<endl;
-	}
-	processNumber->clearBlocks();	
-}
 
 

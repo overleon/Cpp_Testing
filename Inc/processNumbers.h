@@ -17,33 +17,40 @@ typedef struct block_{
 	uint16_t number_of_odd_numbers;
 }block_t;
 
-class ProccesNumber{
+class CProcessNumber{
     private:    
 		uint8_t firstNumber[100];
-		CProcessPrimeNumber *primeNumbersHandler;
-    public:
-
-        ProccesNumber();
-
-		CUserBuffer *numbersBuffer;
         uint8_t blockIndex;
 		block_t block[100];
-		uint8_t threadRunning;
+    public:
 
 		inline void createProcessNumberThread();
+        CProcessNumber();
 
-		void storePrimeNumbers(void);
+		CProcessPrimeNumber primeNumbersHandler;
+		CUserBuffer numbersBuffer;
+
 		void checkMaximumNumber(uint32_t);
 		void checkMinimumNumber(uint32_t);
 		void checkFirstNumber(uint32_t);
 		void setLastNumber(uint32_t);
 		void checkPrimeNumber(uint32_t);
 		void checkEvenOddNumber(uint32_t);
-        void addNumberToQueue(uint32_t number);
 
+		uint32_t assembleNextNumberFromBuffer(void);
+		void processNumber(uint32_t number);
+
+		void checkBlockIndex(void);
+		void passToNextBlock(void);
 		void clearBlocks(void);
+		void showBlocksResult(void);
 
 };
+
+// class CBlocks{
+// 	private:
+// 	public:
+// }
 
 #endif
 
