@@ -15,9 +15,12 @@ class CDataProcessing{
 		
 	public:
 		inline void createParsingThread();
+		inline void createProcessNumberThread();
 		CDataProcessing();
 		virtual ~CDataProcessing(){}
+		uint32_t assembleNumber(void);
 		CUserBuffer systemBuffer;
+		CUserBuffer numbersBuffer;
 		CProcessNumber processNumber;	
 };
 

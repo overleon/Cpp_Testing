@@ -4,15 +4,6 @@
 
 void* pthreadProcessNumber(void *arg);
 
-inline void CProcessNumber::createProcessNumberThread(){
-    pthread_t thread;
-    int rc = pthread_create(&thread, NULL, pthreadProcessNumber, (void*)this);
-    if (rc) {
-        cout << "Error:unable to create thread," << rc << endl;
-        exit(-1);
-    }
-    cout<<"Parsing data Thread created\n";
-} 
 
 CProcessNumber::CProcessNumber(){
 
@@ -24,7 +15,6 @@ CProcessNumber::CProcessNumber(){
     
     primeNumbersHandler.storePrimeNumbers();
 
-    createProcessNumberThread();
 }
 
 void CProcessNumber::checkMaximumNumber(uint32_t number){
@@ -70,8 +60,6 @@ void CProcessNumber::clearAllTheBlocks(void){
     }
 }
 
-
-
 void CProcessNumber::checkBlockIndex(void){
     if(blockIndex == 100){
         blockIndex = 0;
@@ -93,38 +81,6 @@ void CProcessNumber::processNumber(uint32_t number){
     passToNextBlock();
 }
 
-
-uint32_t CProcessNumber::assembleNextNumberFromBuffer(void){
-    uint32_t number = 0;
-    uint32_t firstPart =     (uint32_t)numbersBuffer.getDataFromBuffer();
-    uint32_t secondPart =    (uint32_t)numbersBuffer.getDataFromBuffer();
-    uint32_t thirdPart =     (uint32_t)numbersBuffer.getDataFromBuffer();
-    uint32_t fourthPart =    (uint32_t)numbersBuffer.getDataFromBuffer();
-    number = number|fourthPart;
-    number = number<<8;
-    number = number|thirdPart;
-    number = number<<8;
-    number = number|secondPart;
-    number = number<<8;
-    number = number|firstPart;
-    return number;
-}
-
-void* pthreadProcessNumber(void *arg){
-    CProcessNumber *handler = (CProcessNumber*)arg;
-    while(1){
-
-        while(handler->numbersBuffer.isBufferFull()){
-            uint32_t number = handler->assembleNextNumberFromBuffer();
-            handler->processNumber(number);
-            // cout<<"Number: "<<number<<endl;
-        }
-    }
-    pthread_exit(NULL);
-}
-
-
-
 void CProcessNumber::showBlocksResult(void){
 	for(uint8_t index = 0; index < 100; index++){
 		cout<<"Maximum number: 	"<<block[index].getMaximumNumber()<<endl;
@@ -140,78 +96,78 @@ void CProcessNumber::showBlocksResult(void){
 }
 
 
-CBlocks::CBlocks(){
+CBlock::CBlock(){
     clearBlock();
 }
 
-void CBlocks::resetFirstNumberStatus(void){
+void CBlock::resetFirstNumberStatus(void){
     firstNumberStatus = 0;
 }   
 
-uint8_t CBlocks::getFirstNumberStatus(void){
+uint8_t CBlock::getFirstNumberStatus(void){
     return firstNumberStatus;
 }   
 
-void CBlocks::setMaximumNumber(uint32_t number){
+void CBlock::setMaximumNumber(uint32_t number){
     block.max_number = number;    
 }   
 
-void CBlocks::setMinimumNumber(uint32_t number){
+void CBlock::setMinimumNumber(uint32_t number){
     block.min_number = number;    
 
 }
 
-void CBlocks::setFirstNumber(uint32_t number){
+void CBlock::setFirstNumber(uint32_t number){
     block.first_number = number;    
     firstNumberStatus = 1;
 
 }
 
-void CBlocks::setLastNumber(uint32_t number){
+void CBlock::setLastNumber(uint32_t number){
     block.last_number = number;    
 
 }
 
-void CBlocks::increaseOnePrimeNumbers(void){
+void CBlock::increaseOnePrimeNumbers(void){
     block.number_of_prime_numbers++;
 }
 
-void CBlocks::increaseOneEvenNumbers(void){
+void CBlock::increaseOneEvenNumbers(void){
     block.number_of_even_numbers++;
 }
 
-void CBlocks::increaseOneOddNumbers(void){
+void CBlock::increaseOneOddNumbers(void){
     block.number_of_odd_numbers++;
 }
 
-uint32_t CBlocks::getMaximumNumber(void){
+uint32_t CBlock::getMaximumNumber(void){
     return block.max_number;
 }
 
-uint32_t CBlocks::getMinimumNumber(void){
+uint32_t CBlock::getMinimumNumber(void){
     return block.min_number;
 }
 
-uint32_t CBlocks::getFirstNumber(void){
+uint32_t CBlock::getFirstNumber(void){
     return block.first_number;
 }
 
-uint32_t CBlocks::getLastNumber(void){
+uint32_t CBlock::getLastNumber(void){
     return block.last_number;
 }
 
-uint16_t CBlocks::getNumberOfPrimes(void){
+uint16_t CBlock::getNumberOfPrimes(void){
     return block.number_of_prime_numbers;
 }
 
-uint16_t CBlocks::getNumberOfEvens(void){
+uint16_t CBlock::getNumberOfEvens(void){
     return block.number_of_even_numbers;
 }
 
-uint16_t CBlocks::getNumberOfOdds(void){
+uint16_t CBlock::getNumberOfOdds(void){
     return block.number_of_odd_numbers;
 }
 
-void CBlocks::clearBlock(void){
+void CBlock::clearBlock(void){
     memset(&block, 0x00, sizeof(block));
 }

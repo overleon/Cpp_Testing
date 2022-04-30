@@ -9,7 +9,7 @@ using namespace std;
 
 
 
-class CBlocks{
+class CBlock{
 	private:
 		struct{
 			uint32_t max_number;
@@ -22,8 +22,8 @@ class CBlocks{
 		}block;
 		uint8_t firstNumberStatus;
 	public:
-		CBlocks();
-		~CBlocks(){}
+		CBlock();
+		~CBlock(){}
 
 		uint8_t getFirstNumberStatus(void);
 		void resetFirstNumberStatus(void);
@@ -52,12 +52,10 @@ class CProcessNumber{
 		uint8_t blockIndex;
     public:
 
-		inline void createProcessNumberThread();
         CProcessNumber();
 
-		CUserBuffer numbersBuffer;
 		CProcessPrimeNumber primeNumbersHandler;
-		CBlocks block[100];
+		CBlock block[100];
 
 		void checkMaximumNumber(uint32_t);
 		void checkMinimumNumber(uint32_t);
@@ -75,11 +73,6 @@ class CProcessNumber{
 		void showBlocksResult(void);
 
 };
-
-// class CBlocks{
-// 	private:
-// 	public:
-// }
 
 #endif
 

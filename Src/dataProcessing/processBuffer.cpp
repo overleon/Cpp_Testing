@@ -15,6 +15,7 @@
 using namespace std;
 
 void* pthreadGetBValues(void *arg);
+void* pthreadProcessNumber(void *arg);
 
 inline void CDataProcessing::createParsingThread(){
     pthread_t thread;
@@ -26,8 +27,50 @@ inline void CDataProcessing::createParsingThread(){
     cout<<"Parsing data Thread created\n";
 } 
 
+inline void CDataProcessing::createProcessNumberThread(){
+    pthread_t thread;
+    int rc = pthread_create(&thread, NULL, pthreadProcessNumber, (void*)this);
+    if (rc) {
+        cout << "Error:unable to create thread," << rc << endl;
+        exit(-1);
+    }
+    cout<<"Parsing data Thread created\n";
+} 
+
 CDataProcessing::CDataProcessing(){
     createParsingThread();
+    createProcessNumberThread();
+}
+
+
+
+uint32_t CDataProcessing::assembleNumber(void){
+    uint32_t number = 0;
+    uint32_t firstPart =     (uint32_t)numbersBuffer.getDataFromBuffer();
+    uint32_t secondPart =    (uint32_t)numbersBuffer.getDataFromBuffer();
+    uint32_t thirdPart =     (uint32_t)numbersBuffer.getDataFromBuffer();
+    uint32_t fourthPart =    (uint32_t)numbersBuffer.getDataFromBuffer();
+    number = number|fourthPart;
+    number = number<<8;
+    number = number|thirdPart;
+    number = number<<8;
+    number = number|secondPart;
+    number = number<<8;
+    number = number|firstPart;
+    return number;
+}
+
+void* pthreadProcessNumber(void *arg){
+    CDataProcessing *handler = (CDataProcessing*)arg;
+    while(1){
+        while(handler->numbersBuffer.isBufferFull()){
+            uint32_t number = handler->assembleNumber();
+            handler->processNumber.processNumber(number);
+            // cout<<"Number: "<<number<<endl;
+            // cout<<"Number: "<<handler->numbersBuffer.isBufferFull()<<endl;
+        }
+    }
+    pthread_exit(NULL);
 }
 
 void* pthreadGetBValues(void *arg) {
@@ -50,7 +93,7 @@ void* pthreadGetBValues(void *arg) {
                 }
                 if( numberInString[0] >= '0' && numberInString[0] <= '9'){
                     uint32_t number = (uint32_t)strtoul((const char*)numberInString, NULL, 0 );
-                    handler->processNumber.numbersBuffer.sendDatatoBuffer( sizeof(uint32_t), (uint8_t*)&number);
+                    handler->numbersBuffer.sendDatatoBuffer( sizeof(uint32_t), (uint8_t*)&number);
                     memset(numberInString, 0x00, 11);
                     // cout<<"Number: "<<number<<endl;
                     bCounter++;

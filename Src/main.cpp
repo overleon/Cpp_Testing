@@ -44,7 +44,7 @@ int main () {
 		if(counter++ == (6300)){
 
 			while(dataProcessing->systemBuffer.isBufferFull());
-			while(dataProcessing->processNumber.numbersBuffer.isBufferFull());
+			while(dataProcessing->numbersBuffer.isBufferFull());
 			dataProcessing->processNumber.showBlocksResult();
 			gettimeofday(&tf, NULL);   // Instante final
 			tiempo= (tf.tv_sec - ti.tv_sec)*1000 + (tf.tv_usec - ti.tv_usec)/1000.0;
