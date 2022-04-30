@@ -16,22 +16,20 @@ extern "C" {
     #include "../Inc/websockh.h"
 }
 
-ProccesNumber *proccesNumber = NULL;
-
-void showAllBlocks(void){
-	cout<<"-----------------------------------------------"<<endl;
-	for(uint8_t index = 0; index < 100; index++){
-		cout<<"Maximum number: 	"<<proccesNumber->block[index].max_number<<endl;
-		cout<<"Minimum number: 	"<<proccesNumber->block[index].min_number<<endl;
-		cout<<"First number:   	"<<proccesNumber->block[index].first_number<<endl;
-		cout<<"Last number:    	"<<proccesNumber->block[index].last_number<<endl;
-		cout<<"Number of primes: 	"<<proccesNumber->block[index].number_of_prime_numbers<<endl;
-		cout<<"Number of evens: 	"<<proccesNumber->block[index].number_of_even_numbers<<endl;
-		cout<<"Number of odds: 	"<<proccesNumber->block[index].number_of_odd_numbers<<endl;
-		cout<<"-----------------------------------------------"<<endl;
-	}
-	proccesNumber->clearBlocks();	
-}
+// void showAllBlocks(void){
+// 	cout<<"-----------------------------------------------"<<endl;
+// 	for(uint8_t index = 0; index < 100; index++){
+// 		cout<<"Maximum number: 	"<<proccesNumber->block[index].max_number<<endl;
+// 		cout<<"Minimum number: 	"<<proccesNumber->block[index].min_number<<endl;
+// 		cout<<"First number:   	"<<proccesNumber->block[index].first_number<<endl;
+// 		cout<<"Last number:    	"<<proccesNumber->block[index].last_number<<endl;
+// 		cout<<"Number of primes: 	"<<proccesNumber->block[index].number_of_prime_numbers<<endl;
+// 		cout<<"Number of evens: 	"<<proccesNumber->block[index].number_of_even_numbers<<endl;
+// 		cout<<"Number of odds: 	"<<proccesNumber->block[index].number_of_odd_numbers<<endl;
+// 		cout<<"-----------------------------------------------"<<endl;
+// 	}
+// 	proccesNumber->clearBlocks();	
+// }
 
 uint8_t var[] = "{\"a\": 1234566, \"b\": 680929}";
 
@@ -41,11 +39,8 @@ int main () {
 	// for (uint32_t index = 0; index < UINT32_MAX; index++){
 	// 	processPrimeNumber->checkIfNumberIsPrime(index);
 
-
 	CUserBuffer *userBuffer = new CUserBuffer();
-	proccesNumber = new ProccesNumber(*userBuffer);
-	proccesNumber->storePrimeNumbers();
-	UserParsePacket *userParsePacket = new UserParsePacket(*userBuffer);
+	UserParsePacket *userParsePacket = new UserParsePacket(*userBuffer);	
 
 	SSL_CTX *ssl_ctx = websockh_init_ssl_ctx();
 	websockh ws = websockh_create_connection("209.126.82.146", 8080, "/", NULL);
@@ -69,8 +64,10 @@ int main () {
 			printf("Has tardado: %g milisegundos\n", tiempo);
 
 			while(userBuffer->mBufferLenght);
-			while(proccesNumber->numbersBuffer->mBufferLenght);
-			showAllBlocks();
+			while(userParsePacket->getNumbersBufferLenght());
+			cout<<"Finished"<<endl;
+			userParsePacket->showBlocksResult();
+			// showAllBlocks();
 			counter = 0;
 		}
 	}

@@ -2,9 +2,7 @@
 #include <string.h>
 
 
-ProccesNumber::ProccesNumber(CUserBuffer &subject){
-    userParsePacket = new UserParsePacket(subject);
-    primeNumbersHandler = new CProcessPrimeNumber();
+ProccesNumber::ProccesNumber(){
     
     memset(block, 0x00, sizeof(block));
     for(uint8_t index = 0; index < 100; index++){
@@ -14,9 +12,8 @@ ProccesNumber::ProccesNumber(CUserBuffer &subject){
     threadRunning = 0;
     blockIndex = 0;
     numbersBuffer = new CUserBuffer();
-}
-
-void ProccesNumber::storePrimeNumbers(void){
+    
+    primeNumbersHandler = new CProcessPrimeNumber();
     primeNumbersHandler->storePrimeNumbers();
 }
 
@@ -107,7 +104,7 @@ void ProccesNumber::passNumber(uint32_t number){
     number = number;
     numbersBuffer->sendDatatoBuffer(sizeof(uint32_t), (uint8_t*)&number);
     if(!threadRunning){
-        cout<<"Thread created\n";
+        cout<<"Pass Number Thread created\n";
         pthread_t thread;
         threadRunning = 1;
         int rc = pthread_create(&thread, NULL, process, (void*)this);
