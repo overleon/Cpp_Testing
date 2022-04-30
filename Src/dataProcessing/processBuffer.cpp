@@ -1,5 +1,6 @@
 #include "../../Inc/processBuffer.h"
 #include "../../Inc/primeNumbers.h"
+#include "../../Inc/processNumbers.h"
 
 #include <stdio.h>
 #include <pthread.h>

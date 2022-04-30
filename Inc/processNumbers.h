@@ -3,20 +3,28 @@
 
 #include <iostream>
 #include "observerPattern.h"
-#include "primeNumbers.h"
 #include "userBuffer.h"
-#include "proccessData.h"
-#include "proccessData.h"
 #include "primeNumbers.h"
 
 using namespace std;
+
+typedef struct block_{
+	uint32_t max_number;
+	uint32_t min_number;
+	uint32_t first_number;
+	uint32_t last_number;
+	uint16_t number_of_prime_numbers;
+	uint16_t number_of_even_numbers;
+	uint16_t number_of_odd_numbers;
+}block_t;
 
 class ProccesNumber{
     private:    
 		uint8_t firstNumber[100];
 		CProcessPrimeNumber *primeNumbersHandler;
-        UserParsePacket *userParsePacket;
     public:
+
+        ProccesNumber();
 
 		CUserBuffer *numbersBuffer;
         uint8_t blockIndex;
@@ -32,10 +40,7 @@ class ProccesNumber{
 		void checkPrimeNumber(uint32_t);
 		void checkEvenOddNumber(uint32_t);
 
-        ProccesNumber(CUserBuffer &subject);
         void passNumber(uint32_t number);
-
-
 
 		void clearBlocks(void);
 
