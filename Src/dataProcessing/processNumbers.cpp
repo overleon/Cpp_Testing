@@ -6,95 +6,94 @@ void* pthreadProcessNumber(void *arg);
 
 
 CProcessNumber::CProcessNumber(){
-
-    for(uint8_t index = 0; index < 100; index++){
-        block[index].clearBlock();
-        block[index].setMinimumNumber(UINT32_MAX);
-    }
-    blockIndex = 0;
-    
     primeNumbersHandler.storePrimeNumbers();
-
 }
 
-void CProcessNumber::checkMaximumNumber(uint32_t number){
-    if(block[blockIndex].getMaximumNumber() < number){
-        block[blockIndex].setMaximumNumber(number);
+void CProcessNumber::checkMaximumNumber(uint32_t number, CBlock *block){
+    if(block->getMaximumNumber() < number){
+        block->setMaximumNumber(number);
     }
 }
 
-void CProcessNumber::checkMinimumNumber(uint32_t number){
-    if(block[blockIndex].getMinimumNumber() > number){
-        block[blockIndex].setMinimumNumber(number);
+void CProcessNumber::checkMinimumNumber(uint32_t number, CBlock *block){
+    if(block->getMinimumNumber() > number){
+        block->setMinimumNumber(number);
     }
 }
 
-void CProcessNumber::checkFirstNumber(uint32_t number){
-    if(!block[blockIndex].getFirstNumberStatus()){
-        block[blockIndex].setFirstNumber(number);
+void CProcessNumber::checkFirstNumber(uint32_t number, CBlock *block){
+    if(!block->getFirstNumberStatus()){
+        block->setFirstNumber(number);
     }
 }
 
-void CProcessNumber::checkPrimeNumber(uint32_t number){
+void CProcessNumber::checkPrimeNumber(uint32_t number, CBlock *block){
     if(!primeNumbersHandler.checkIfNumberIsPrime(number)){
-        block[blockIndex].increaseOnePrimeNumbers();
+        block->increaseOnePrimeNumbers();
     }
 }
 
-void CProcessNumber::checkEvenOddNumber(uint32_t number){
+void CProcessNumber::checkEvenOddNumber(uint32_t number, CBlock *block){
     if ( number % 2 == 0){
-        block[blockIndex].increaseOneEvenNumbers();
+        block->increaseOneEvenNumbers();
     }else{
-        block[blockIndex].increaseOneOddNumbers();
+        block->increaseOneOddNumbers();
     }
 }
 
-void CProcessNumber::setLastNumber(uint32_t number){
-    block[blockIndex].setLastNumber(number);
+void CProcessNumber::setLastNumber(uint32_t number, CBlock *block){
+    block->setLastNumber(number);
 }
 
-void CProcessNumber::clearAllTheBlocks(void){
-    for(uint8_t index = 0; index < 100; index++){
-        block[index].clearBlock();
-        block[index].setMinimumNumber(UINT32_MAX);
-    }
+void CProcessNumber::processNumber(uint32_t number, CBlock *block){
+    checkMaximumNumber(number, block);
+    checkMinimumNumber(number, block);
+    checkFirstNumber(number, block);
+    setLastNumber(number, block);
+    checkEvenOddNumber(number, block);
+    checkPrimeNumber(number, block);
 }
 
-void CProcessNumber::checkBlockIndex(void){
-    if(blockIndex == 100){
-        blockIndex = 0;
-    }
+CBlockHandler::CBlockHandler(CBlock *blocks, uint32_t size){
+    handler = blocks;
+    this->size = size;
+    blockIndex = 0;
 }
 
-void CProcessNumber::passToNextBlock(void){
+void CBlockHandler::showBlocksResult(void){
+	for(uint8_t index = 0; index < 100; index++){
+		cout<<"Maximum number: 	"<<handler[index].getMaximumNumber()<<endl;
+		cout<<"Minimum number: 	"<<handler[index].getMinimumNumber()<<endl;
+		cout<<"First number:   	"<<handler[index].getFirstNumber()<<endl;
+		cout<<"Last number:    	"<<handler[index].getLastNumber()<<endl;
+		cout<<"Number of primes: 	"<<handler[index].getNumberOfPrimes()<<endl;
+		cout<<"Number of evens: 	"<<handler[index].getNumberOfEvens()<<endl;
+		cout<<"Number of odds: 	"<<handler[index].getNumberOfOdds()<<endl;
+		cout<<"-----------------------------------------------"<<endl;
+	}
+}
+
+void CBlockHandler::passToNextBlock(void){
     blockIndex++;
 }
 
-void CProcessNumber::processNumber(uint32_t number){
-    checkBlockIndex();
-    checkMaximumNumber(number);
-    checkMinimumNumber(number);
-    checkFirstNumber(number);
-    setLastNumber(number);
-    checkEvenOddNumber(number);
-    checkPrimeNumber(number);
-    passToNextBlock();
+void CBlockHandler::clearAllTheBlocks(void){
+    for(uint8_t index = 0; index < size; index++){
+        handler[index].clearBlock();
+        handler[index].setMinimumNumber(UINT32_MAX);
+        handler[index].resetFirstNumberStatus();
+    }
 }
 
-void CProcessNumber::showBlocksResult(void){
-	for(uint8_t index = 0; index < 100; index++){
-		cout<<"Maximum number: 	"<<block[index].getMaximumNumber()<<endl;
-		cout<<"Minimum number: 	"<<block[index].getMinimumNumber()<<endl;
-		cout<<"First number:   	"<<block[index].getFirstNumber()<<endl;
-		cout<<"Last number:    	"<<block[index].getLastNumber()<<endl;
-		cout<<"Number of primes: 	"<<block[index].getNumberOfPrimes()<<endl;
-		cout<<"Number of evens: 	"<<block[index].getNumberOfEvens()<<endl;
-		cout<<"Number of odds: 	"<<block[index].getNumberOfOdds()<<endl;
-		cout<<"-----------------------------------------------"<<endl;
-	}
-	clearAllTheBlocks();	
+uint32_t CBlockHandler::getIndex(void){
+    return blockIndex;
 }
 
+void CBlockHandler::checkBlockIndex(void){
+    if(blockIndex == size){
+        blockIndex = 0;
+    }
+}
 
 CBlock::CBlock(){
     clearBlock();

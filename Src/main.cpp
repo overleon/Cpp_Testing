@@ -22,7 +22,6 @@ int main () {
 	// CProcessPrimeNumber *processPrimeNumber = new CProcessPrimeNumber();
 	// for (uint32_t index = 0; index < UINT32_MAX; index++){
 	// 	processPrimeNumber->checkIfNumberIsPrime(index);
-
 	CDataProcessing *dataProcessing = new CDataProcessing();	
 
 	SSL_CTX *ssl_ctx = websockh_init_ssl_ctx();
@@ -45,7 +44,8 @@ int main () {
 
 			while(dataProcessing->systemBuffer.isBufferFull());
 			while(dataProcessing->numbersBuffer.isBufferFull());
-			dataProcessing->processNumber.showBlocksResult();
+			dataProcessing->blockHandler->showBlocksResult();
+			dataProcessing->blockHandler->clearAllTheBlocks();
 			gettimeofday(&tf, NULL);   // Instante final
 			tiempo= (tf.tv_sec - ti.tv_sec)*1000 + (tf.tv_usec - ti.tv_usec)/1000.0;
 			printf("Has tardado: %g milisegundos\n", tiempo);

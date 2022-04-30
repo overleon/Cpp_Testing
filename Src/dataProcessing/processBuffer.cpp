@@ -40,7 +40,9 @@ inline void CDataProcessing::createProcessNumberThread(){
 CDataProcessing::CDataProcessing(){
     createParsingThread();
     createProcessNumberThread();
-}
+    blockHandler = new CBlockHandler(block, 100);    
+    blockHandler->clearAllTheBlocks();
+} 
 
 
 
@@ -64,8 +66,10 @@ void* pthreadProcessNumber(void *arg){
     CDataProcessing *handler = (CDataProcessing*)arg;
     while(1){
         while(handler->numbersBuffer.isBufferFull()){
+            handler->blockHandler->checkBlockIndex();
             uint32_t number = handler->assembleNumber();
-            handler->processNumber.processNumber(number);
+            handler->processNumber.processNumber(number, &handler->block[handler->blockHandler->getIndex()]);
+            handler->blockHandler->passToNextBlock();
             // cout<<"Number: "<<number<<endl;
             // cout<<"Number: "<<handler->numbersBuffer.isBufferFull()<<endl;
         }
@@ -103,6 +107,3 @@ void* pthreadGetBValues(void *arg) {
     }
     pthread_exit(NULL);
 }
-
-
-
