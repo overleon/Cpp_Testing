@@ -1,5 +1,5 @@
 #include "../../Inc/dataProcessing/primeNumbers.h"
-#include <primesieve.hpp>
+#include "../../Inc/primesieve/primesieve.hpp"
 #include <iostream>
 
 using namespace std;

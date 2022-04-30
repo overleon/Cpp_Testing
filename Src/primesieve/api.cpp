@@ -9,8 +9,7 @@
 /// This file is distributed under the BSD License. See the COPYING
 /// file in the top level directory.
 ///
-
-#include <primesieve.hpp>
+#include "../../Inc/primesieve/primesieve.hpp"
 #include "../../Inc/primesieve/config.hpp"
 #include "../../Inc/primesieve/CpuInfo.hpp"
 #include "../../Inc/primesieve/pmath.hpp"
