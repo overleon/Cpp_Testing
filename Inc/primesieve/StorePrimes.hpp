@@ -12,7 +12,7 @@
 #define STOREPRIMES_HPP
 
 #include "iterator.hpp"
-#include "primesieve_error.hpp"
+#include "../../Inc/primesieve/primesieve_error.hpp"
 
 #include <stdint.h>
 #include <algorithm>

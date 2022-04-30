@@ -7,8 +7,7 @@
 /// This file is distributed under the BSD License. See the COPYING
 /// file in the top level directory.
 ///
-
-#include "primesieve.h"
+#include "../../Inc/primesieve/primesieve.h"
 #include "../../Inc/primesieve/forward.hpp"
 #include "../../Inc/primesieve/IteratorHelper.hpp"
 #include "../../Inc/primesieve/PrimeGenerator.hpp"

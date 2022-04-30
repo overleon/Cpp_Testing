@@ -466,7 +466,7 @@ void CpuInfo::init()
 
 #else // Linux (and unknown OSes)
 
-#include "primesieve/primesieve_error.hpp"
+#include "../../Inc/primesieve/primesieve_error.hpp"
 
 #include <algorithm>
 #include <cctype>
