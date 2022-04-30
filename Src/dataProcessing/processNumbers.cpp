@@ -15,11 +15,10 @@ inline void CProcessNumber::createProcessNumberThread(){
 } 
 
 CProcessNumber::CProcessNumber(){
-    
-    memset(block, 0x00, sizeof(block));
+
     for(uint8_t index = 0; index < 100; index++){
-        block[index].min_number = UINT32_MAX;
-        firstNumber[index] = 0;
+        block[index].clearBlock();
+        block[index].setMinimumNumber(UINT32_MAX);
     }
     blockIndex = 0;
     
@@ -29,48 +28,45 @@ CProcessNumber::CProcessNumber(){
 }
 
 void CProcessNumber::checkMaximumNumber(uint32_t number){
-    if(block[blockIndex].max_number < number){
-        block[blockIndex].max_number = number;
+    if(block[blockIndex].getMaximumNumber() < number){
+        block[blockIndex].setMaximumNumber(number);
     }
 }
 
 void CProcessNumber::checkMinimumNumber(uint32_t number){
-    if(block[blockIndex].min_number > number){
-        block[blockIndex].min_number = number;
+    if(block[blockIndex].getMinimumNumber() > number){
+        block[blockIndex].setMinimumNumber(number);
     }
 }
 
 void CProcessNumber::checkFirstNumber(uint32_t number){
-    if(!firstNumber[blockIndex]){
-        block[blockIndex].first_number = number;
-        firstNumber[blockIndex] = 1;
+    if(!block[blockIndex].getFirstNumberStatus()){
+        block[blockIndex].setFirstNumber(number);
     }
 }
 
 void CProcessNumber::checkPrimeNumber(uint32_t number){
     if(!primeNumbersHandler.checkIfNumberIsPrime(number)){
-        block[blockIndex].number_of_prime_numbers++;
+        block[blockIndex].increaseOnePrimeNumbers();
     }
-
 }
 
 void CProcessNumber::checkEvenOddNumber(uint32_t number){
     if ( number % 2 == 0){
-        block[blockIndex].number_of_even_numbers++;
+        block[blockIndex].increaseOneEvenNumbers();
     }else{
-        block[blockIndex].number_of_odd_numbers++;
+        block[blockIndex].increaseOneOddNumbers();
     }
 }
 
 void CProcessNumber::setLastNumber(uint32_t number){
-    block[blockIndex].last_number = number;
+    block[blockIndex].setLastNumber(number);
 }
 
-void CProcessNumber::clearBlocks(void){
-    memset(&block, 0x00, sizeof(block));
+void CProcessNumber::clearAllTheBlocks(void){
     for(uint8_t index = 0; index < 100; index++){
-        block[index].min_number = UINT32_MAX;
-        firstNumber[index] = 0;
+        block[index].clearBlock();
+        block[index].setMinimumNumber(UINT32_MAX);
     }
 }
 
@@ -131,14 +127,91 @@ void* pthreadProcessNumber(void *arg){
 
 void CProcessNumber::showBlocksResult(void){
 	for(uint8_t index = 0; index < 100; index++){
-		cout<<"Maximum number: 	"<<block[index].max_number<<endl;
-		cout<<"Minimum number: 	"<<block[index].min_number<<endl;
-		cout<<"First number:   	"<<block[index].first_number<<endl;
-		cout<<"Last number:    	"<<block[index].last_number<<endl;
-		cout<<"Number of primes: 	"<<block[index].number_of_prime_numbers<<endl;
-		cout<<"Number of evens: 	"<<block[index].number_of_even_numbers<<endl;
-		cout<<"Number of odds: 	"<<block[index].number_of_odd_numbers<<endl;
+		cout<<"Maximum number: 	"<<block[index].getMaximumNumber()<<endl;
+		cout<<"Minimum number: 	"<<block[index].getMinimumNumber()<<endl;
+		cout<<"First number:   	"<<block[index].getFirstNumber()<<endl;
+		cout<<"Last number:    	"<<block[index].getLastNumber()<<endl;
+		cout<<"Number of primes: 	"<<block[index].getNumberOfPrimes()<<endl;
+		cout<<"Number of evens: 	"<<block[index].getNumberOfEvens()<<endl;
+		cout<<"Number of odds: 	"<<block[index].getNumberOfOdds()<<endl;
 		cout<<"-----------------------------------------------"<<endl;
 	}
-	clearBlocks();	
+	clearAllTheBlocks();	
+}
+
+
+CBlocks::CBlocks(){
+    clearBlock();
+}
+
+void CBlocks::resetFirstNumberStatus(void){
+    firstNumberStatus = 0;
+}   
+
+uint8_t CBlocks::getFirstNumberStatus(void){
+    return firstNumberStatus;
+}   
+
+void CBlocks::setMaximumNumber(uint32_t number){
+    block.max_number = number;    
+}   
+
+void CBlocks::setMinimumNumber(uint32_t number){
+    block.min_number = number;    
+
+}
+
+void CBlocks::setFirstNumber(uint32_t number){
+    block.first_number = number;    
+    firstNumberStatus = 1;
+
+}
+
+void CBlocks::setLastNumber(uint32_t number){
+    block.last_number = number;    
+
+}
+
+void CBlocks::increaseOnePrimeNumbers(void){
+    block.number_of_prime_numbers++;
+}
+
+void CBlocks::increaseOneEvenNumbers(void){
+    block.number_of_even_numbers++;
+}
+
+void CBlocks::increaseOneOddNumbers(void){
+    block.number_of_odd_numbers++;
+}
+
+uint32_t CBlocks::getMaximumNumber(void){
+    return block.max_number;
+}
+
+uint32_t CBlocks::getMinimumNumber(void){
+    return block.min_number;
+}
+
+uint32_t CBlocks::getFirstNumber(void){
+    return block.first_number;
+}
+
+uint32_t CBlocks::getLastNumber(void){
+    return block.last_number;
+}
+
+uint16_t CBlocks::getNumberOfPrimes(void){
+    return block.number_of_prime_numbers;
+}
+
+uint16_t CBlocks::getNumberOfEvens(void){
+    return block.number_of_even_numbers;
+}
+
+uint16_t CBlocks::getNumberOfOdds(void){
+    return block.number_of_odd_numbers;
+}
+
+void CBlocks::clearBlock(void){
+    memset(&block, 0x00, sizeof(block));
 }
