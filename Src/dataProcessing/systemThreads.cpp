@@ -70,6 +70,7 @@ void* pthreadProcessNumber(void *arg){
             handler->passToNextBlock();
             // cout<<"Number: "<<handler->numbersBuffer.getLenght()<<endl;
         }
+        usleep(100);
     }
     pthread_exit(NULL);
 }
@@ -101,6 +102,7 @@ void* pthreadGetBValues(void *arg) {
                 }
             }
         }
+        usleep(100);
     }
     pthread_exit(NULL);
 }
