@@ -10,25 +10,23 @@
 #include "processNumbers.h"
 
 
-class CDataProcessing : public IObserver{
+class CDataProcessing{
  public:
-	CDataProcessing(CUserBuffer &subject);
+	CDataProcessing();
 	virtual ~CDataProcessing(){
 		std::cout << "Goodbye, I was the Observer\n";
 	}
-	void Update(const std::string &message_from_subject);
-	void RemoveMeFromTheList();
-
-	uint8_t getNextDataFromBuffer(void);
+	uint8_t getNextDataFromSystemBuffer(void);
 	uint32_t getSystemBufferLenght(void);
 	uint32_t getNumbersBufferLenght(void);
 	void sendNumberToNumbersBuffer(uint32_t number);
 	void showBlocksResult(void);
+	void saveData(uint32_t lenght, uint8_t *data);
+	inline void createParsingThread(CDataProcessing *dataProcessing);
+	
  private:
+	CUserBuffer *systemBuffer;
 	ProccesNumber *processNumber;
-	CUserBuffer &subject_;
-	int parseThreadRunningStatus;
-	std::string message_from_subject_;
 };
 
 

@@ -2,7 +2,6 @@
 #define PROCESSNUMBER_H
 
 #include <iostream>
-#include "observerPattern.h"
 #include "userBuffer.h"
 #include "primeNumbers.h"
 

@@ -14,7 +14,7 @@ ProccesNumber::ProccesNumber(){
     numbersBuffer = new CUserBuffer();
     
     primeNumbersHandler = new CProcessPrimeNumber();
-    primeNumbersHandler->storePrimeNumbers();
+    // primeNumbersHandler->storePrimeNumbers();
 }
 
 void ProccesNumber::checkMaximumNumber(uint32_t number){
@@ -104,7 +104,7 @@ void ProccesNumber::passNumber(uint32_t number){
     number = number;
     numbersBuffer->sendDatatoBuffer(sizeof(uint32_t), (uint8_t*)&number);
     if(!threadRunning){
-        cout<<"Pass Number Thread created\n";
+        cout<<"Processing Numbers Thread created\n";
         pthread_t thread;
         threadRunning = 1;
         int rc = pthread_create(&thread, NULL, process, (void*)this);

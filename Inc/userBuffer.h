@@ -2,7 +2,6 @@
 #define USERBUFFER_H
 
 #include <iostream>
-#include "observerPattern.h"
 
 using namespace std;
 
@@ -12,7 +11,7 @@ class Node {
 		Node* next;
 };
 
-class CUserBuffer : public ISubject{
+class CUserBuffer{
 	private:
 		Node* mBufferHead;		
 		Node* mBufferTail;		

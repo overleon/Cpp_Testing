@@ -14,11 +14,27 @@
 
 using namespace std;
 
+void* pthreadGetBValues(void *arg);
 
-CDataProcessing::CDataProcessing(CUserBuffer &subject):subject_(subject){
-    this->subject_.Attach(this);
+inline void CDataProcessing::createParsingThread(CDataProcessing *dataProcessing){
+    pthread_t thread;
+    int rc = pthread_create(&thread, NULL, pthreadGetBValues, (void*)dataProcessing);
+    if (rc) {
+        cout << "Error:unable to create thread," << rc << endl;
+        exit(-1);
+    }
+    cout<<"Parsing data Thread created\n";
+} 
+
+CDataProcessing::CDataProcessing(){
+    systemBuffer = new CUserBuffer();
     processNumber = new ProccesNumber();
-    parseThreadRunningStatus = 0;
+    // createParsingThread(this);
+}
+
+
+void CDataProcessing::saveData(uint32_t lenght, uint8_t *data){
+    systemBuffer->sendDatatoBuffer(lenght, data);
 }
 
 void* pthreadGetBValues(void *arg) {
@@ -27,38 +43,37 @@ void* pthreadGetBValues(void *arg) {
     uint8_t numberInString[10] = {0};
     while(1){
         while(handler->getSystemBufferLenght()){
-            uint8_t character = handler->getNextDataFromBuffer();    
+            uint8_t character = handler->getNextDataFromSystemBuffer();    
             if(character == 'b'){
-                character = handler->getNextDataFromBuffer();//---- "
-                character = handler->getNextDataFromBuffer();//---- :
-                character = handler->getNextDataFromBuffer();//---- space
-                character = handler->getNextDataFromBuffer();//---- firstNumber
+                character = handler->getNextDataFromSystemBuffer();//---- "
+                character = handler->getNextDataFromSystemBuffer();//---- :
+                character = handler->getNextDataFromSystemBuffer();//---- space
+                character = handler->getNextDataFromSystemBuffer();//---- firstNumber
                 unsigned char index = 0;//Variable to protect the system againt an infinity loop
                 while((character >= '0' && character <= '9') && index < 10){
                     numberInString[index] = character; 
-                    character = handler->getNextDataFromBuffer();
+                    character = handler->getNextDataFromSystemBuffer();
                     index++;
                 }
                 if( numberInString[0] >= '0' && numberInString[0] <= '9'){
                     uint32_t number = (uint32_t)strtoul((const char*)numberInString, NULL, 0 );
-                    handler->sendNumberToNumbersBuffer(number);
+                    // handler->sendNumberToNumbersBuffer(number);
                     memset(numberInString, 0x00, 11);
+                    cout<<"Number: "<<number<<endl;
                     bCounter++;
                 }
             }
-            // cout<<"Number: "<<handler->isBufferFull()<<endl;
         }
     }
-    // handler->parseThreadRunningStatus = 0;
     pthread_exit(NULL);
 }
 
-uint8_t CDataProcessing::getNextDataFromBuffer(void){
-    return subject_.getDataFromBuffer();
+uint8_t CDataProcessing::getNextDataFromSystemBuffer(void){
+    return systemBuffer->getDataFromBuffer();
 }
 
 uint32_t CDataProcessing::getSystemBufferLenght(void){
-    return subject_.isBufferFull();
+    return systemBuffer->isBufferFull();
 }
 
 uint32_t CDataProcessing::getNumbersBufferLenght(void){
@@ -83,21 +98,4 @@ void CDataProcessing::showBlocksResult(void){
 	processNumber->clearBlocks();	
 }
 
-void CDataProcessing::Update(const std::string &message_from_subject) {
-    if(!parseThreadRunningStatus){
-        cout<<"Parse Packet Thread created\n";
-        pthread_t thread;
-        int rc = pthread_create(&thread, NULL, pthreadGetBValues, (void*)this);
-        parseThreadRunningStatus = 1;
-        if (rc) {
-            cout << "Error:unable to create thread," << rc << endl;
-            exit(-1);
-        }
-    }
-}
-
-
-void CDataProcessing::RemoveMeFromTheList() {
-	subject_.Detach(this);
-}
 

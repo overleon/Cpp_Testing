@@ -73,7 +73,6 @@ void CUserBuffer::sendDatatoBuffer(uint32_t lenght, uint8_t *data){
     auxiliarData[index-1]->next = NULL;
     mBufferTail = auxiliarData[index-1];
     mBufferLenght += lenght;
-    Notify();
 }
 
 uint32_t CUserBuffer::isBufferFull(void){
