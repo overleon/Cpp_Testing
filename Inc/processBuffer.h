@@ -22,7 +22,7 @@ class CDataProcessing{
 	void sendNumberToNumbersBuffer(uint32_t number);
 	void showBlocksResult(void);
 	void saveData(uint32_t lenght, uint8_t *data);
-	inline void createParsingThread(CDataProcessing *dataProcessing);
+	inline void createParsingThread();
 	
  private:
 	CUserBuffer *systemBuffer;

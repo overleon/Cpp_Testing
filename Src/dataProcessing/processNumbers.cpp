@@ -1,6 +1,18 @@
 #include "../../Inc/processNumbers.h"
 #include <string.h>
+#include <unistd.h>
 
+void* pthreadProcessNumber(void *arg);
+
+inline void ProccesNumber::createProcessNumberThread(){
+    pthread_t thread;
+    int rc = pthread_create(&thread, NULL, pthreadProcessNumber, (void*)this);
+    if (rc) {
+        cout << "Error:unable to create thread," << rc << endl;
+        exit(-1);
+    }
+    cout<<"Parsing data Thread created\n";
+} 
 
 ProccesNumber::ProccesNumber(){
     
@@ -11,10 +23,13 @@ ProccesNumber::ProccesNumber(){
     }
     threadRunning = 0;
     blockIndex = 0;
-    numbersBuffer = new CUserBuffer();
     
+    numbersBuffer = new CUserBuffer();
+
     primeNumbersHandler = new CProcessPrimeNumber();
-    // primeNumbersHandler->storePrimeNumbers();
+    primeNumbersHandler->storePrimeNumbers();
+
+    createProcessNumberThread();
 }
 
 void ProccesNumber::checkMaximumNumber(uint32_t number){
@@ -78,8 +93,7 @@ uint32_t assembleNumber(ProccesNumber* handler){
     number = number|firstPart;
     return number;
 }
-
-void* process(void *arg){
+void* pthreadProcessNumber(void *arg){
     ProccesNumber *handler = (ProccesNumber*)arg;
     while(1){
 
@@ -100,18 +114,7 @@ void* process(void *arg){
     pthread_exit(NULL);
 }
 
-void ProccesNumber::passNumber(uint32_t number){
-    number = number;
+void ProccesNumber::addNumberToQueue(uint32_t number){
     numbersBuffer->sendDatatoBuffer(sizeof(uint32_t), (uint8_t*)&number);
-    if(!threadRunning){
-        cout<<"Processing Numbers Thread created\n";
-        pthread_t thread;
-        threadRunning = 1;
-        int rc = pthread_create(&thread, NULL, process, (void*)this);
-        if (rc) {
-            cout << "Error:unable to create thread," << rc << endl;
-            exit(-1);
-        }
-    }
 }
 

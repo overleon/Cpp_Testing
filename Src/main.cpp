@@ -37,18 +37,21 @@ int main () {
 		uint64_t len;
 		uint8_t opcode;
 		char *msg = (char *)websockh_recv(ws, &len, &opcode);
+		// cout<<"lenght: "<<len<<endl;
+		// systemBuffer->sendDatatoBuffer(len, (uint8_t*)msg);
 		dataProcessing->saveData(len, (uint8_t*)msg);
-		// if(counter++ == (6300)){
-		// 	gettimeofday(&tf, NULL);   // Instante final
-		// 	tiempo= (tf.tv_sec - ti.tv_sec)*1000 + (tf.tv_usec - ti.tv_usec)/1000.0;
-		// 	printf("Has tardado: %g milisegundos\n", tiempo);
+		// cout<<"counter: "<<counter++<<endl;
+		// systemBuffer->sendDatatoBuffer(0, (uint8_t*)var);
+		if(counter++ == (6300)){
 
-		// 	while(dataProcessing->getSystemBufferLenght());
-		// 	while(dataProcessing->getNumbersBufferLenght());
-		// 	dataProcessing->showBlocksResult();
-		// 	// showAllBlocks();
-		// 	counter = 0;
-		// }
+			while(dataProcessing->getSystemBufferLenght());
+			while(dataProcessing->getNumbersBufferLenght());
+			dataProcessing->showBlocksResult();
+			gettimeofday(&tf, NULL);   // Instante final
+			tiempo= (tf.tv_sec - ti.tv_sec)*1000 + (tf.tv_usec - ti.tv_usec)/1000.0;
+			printf("Has tardado: %g milisegundos\n", tiempo);
+			counter = 0;
+		}
 	}
 	websockh_close_connection(ws);
 	SSL_CTX_free(ssl_ctx);

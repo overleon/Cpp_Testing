@@ -16,9 +16,9 @@ using namespace std;
 
 void* pthreadGetBValues(void *arg);
 
-inline void CDataProcessing::createParsingThread(CDataProcessing *dataProcessing){
+inline void CDataProcessing::createParsingThread(){
     pthread_t thread;
-    int rc = pthread_create(&thread, NULL, pthreadGetBValues, (void*)dataProcessing);
+    int rc = pthread_create(&thread, NULL, pthreadGetBValues, (void*)this);
     if (rc) {
         cout << "Error:unable to create thread," << rc << endl;
         exit(-1);
@@ -29,7 +29,7 @@ inline void CDataProcessing::createParsingThread(CDataProcessing *dataProcessing
 CDataProcessing::CDataProcessing(){
     systemBuffer = new CUserBuffer();
     processNumber = new ProccesNumber();
-    // createParsingThread(this);
+    createParsingThread();
 }
 
 
@@ -57,9 +57,9 @@ void* pthreadGetBValues(void *arg) {
                 }
                 if( numberInString[0] >= '0' && numberInString[0] <= '9'){
                     uint32_t number = (uint32_t)strtoul((const char*)numberInString, NULL, 0 );
-                    // handler->sendNumberToNumbersBuffer(number);
+                    handler->sendNumberToNumbersBuffer(number);
                     memset(numberInString, 0x00, 11);
-                    cout<<"Number: "<<number<<endl;
+                    // cout<<"Number: "<<number<<endl;
                     bCounter++;
                 }
             }
@@ -81,7 +81,7 @@ uint32_t CDataProcessing::getNumbersBufferLenght(void){
 }
 
 void CDataProcessing::sendNumberToNumbersBuffer(uint32_t number){
-    processNumber->passNumber(number);
+    processNumber->addNumberToQueue(number);
 }
 
 void CDataProcessing::showBlocksResult(void){

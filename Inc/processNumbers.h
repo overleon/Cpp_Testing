@@ -28,8 +28,9 @@ class ProccesNumber{
 		CUserBuffer *numbersBuffer;
         uint8_t blockIndex;
 		block_t block[100];
-        uint32_t mNumber;
 		uint8_t threadRunning;
+
+		inline void createProcessNumberThread();
 
 		void storePrimeNumbers(void);
 		void checkMaximumNumber(uint32_t);
@@ -38,8 +39,7 @@ class ProccesNumber{
 		void setLastNumber(uint32_t);
 		void checkPrimeNumber(uint32_t);
 		void checkEvenOddNumber(uint32_t);
-
-        void passNumber(uint32_t number);
+        void addNumberToQueue(uint32_t number);
 
 		void clearBlocks(void);
 

@@ -17,6 +17,7 @@ CUserBuffer::CUserBuffer(){
     mBufferHead = new Node();
     mBufferHead->next = NULL;
     mBufferHead->data = 0;
+    mBufferLenght = 0;
 }
 
 void CUserBuffer::clearBuffer(void){
@@ -47,15 +48,17 @@ void CUserBuffer::printBuffer(void)
 }
 
 
-
 void CUserBuffer::sendDatatoBuffer(uint32_t lenght, uint8_t *data){
+    if(lenght == 0 || data == NULL){
+        return;
+    }
     Node *auxiliarData[lenght] = {NULL};
-    for (size_t index = 0; index < lenght; index++)
+    for (uint32_t index = 0; index < lenght; index++)
     {
         auxiliarData[index] = new Node();
     }
 
-    size_t index = 0;
+    uint32_t index = 0;
     if(mBufferHead->next == NULL){
         mBufferHead->data = data[0];
         mBufferHead->next = auxiliarData[0];
