@@ -1,5 +1,5 @@
 #include "../../Inc/userBuffer.h"
-#include "../../Inc/proccessData.h"
+#include "../../Inc/processBuffer.h"
 
 #include <stdio.h>
 #include <pthread.h>
