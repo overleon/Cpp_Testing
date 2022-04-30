@@ -19,11 +19,11 @@ class CUserBuffer{
 		uint32_t mBufferLenght;
 		virtual ~CUserBuffer(){}
 		CUserBuffer();
-		void sendDatatoBuffer(uint32_t lenght, uint8_t *data);
+		void saveData(uint32_t lenght, uint8_t *data);
 		void printBuffer(void);
 		void clearBuffer(void);
 		uint8_t getDataFromBuffer(void);
-		uint32_t isBufferFull(void);
+		uint32_t getLenght(void);
 };
 
 #endif

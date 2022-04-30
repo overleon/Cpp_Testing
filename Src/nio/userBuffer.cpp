@@ -1,5 +1,5 @@
 #include "../../Inc/userBuffer.h"
-#include "../../Inc/processBuffer.h"
+#include "../../Inc/systemThreads.h"
 
 #include <stdio.h>
 #include <pthread.h>
@@ -81,6 +81,7 @@ void CUserBuffer::saveData(uint32_t lenght, uint8_t *data){
 uint32_t CUserBuffer::getLenght(void){
     return mBufferLenght;
 }
+
 uint8_t CUserBuffer::getDataFromBuffer(void){
     if(mBufferLenght){
         if(mBufferHead->next != NULL){
