@@ -1,6 +1,7 @@
 #include "../../Inc/processBuffer.h"
 #include "../../Inc/primeNumbers.h"
 #include "../../Inc/processNumbers.h"
+#include "../../Inc/blocks.h"
 
 #include <stdio.h>
 #include <pthread.h>
@@ -24,7 +25,7 @@ inline void CDataProcessing::createParsingThread(){
         cout << "Error:unable to create thread," << rc << endl;
         exit(-1);
     }
-    cout<<"Parsing data Thread created\n";
+    cout<<"Thread: Parsing data --- Created\n";
 } 
 
 inline void CDataProcessing::createProcessNumberThread(){
@@ -34,7 +35,7 @@ inline void CDataProcessing::createProcessNumberThread(){
         cout << "Error:unable to create thread," << rc << endl;
         exit(-1);
     }
-    cout<<"Parsing data Thread created\n";
+    cout<<"Thread: Processing numbers --- created\n";
 } 
 
 CDataProcessing::CDataProcessing(){
@@ -43,8 +44,6 @@ CDataProcessing::CDataProcessing(){
     blockHandler = new CBlockHandler(block, 100);    
     blockHandler->clearAllTheBlocks();
 } 
-
-
 
 uint32_t CDataProcessing::assembleNumber(void){
     uint32_t number = 0;
@@ -65,13 +64,12 @@ uint32_t CDataProcessing::assembleNumber(void){
 void* pthreadProcessNumber(void *arg){
     CDataProcessing *handler = (CDataProcessing*)arg;
     while(1){
-        while(handler->numbersBuffer.isBufferFull()){
-            handler->blockHandler->checkBlockIndex();
+        while(handler->numbersBuffer.getLenght()){
             uint32_t number = handler->assembleNumber();
             handler->processNumber.processNumber(number, &handler->block[handler->blockHandler->getIndex()]);
             handler->blockHandler->passToNextBlock();
             // cout<<"Number: "<<number<<endl;
-            // cout<<"Number: "<<handler->numbersBuffer.isBufferFull()<<endl;
+            // cout<<"Number: "<<handler->numbersBuffer.getLenght()<<endl;
         }
     }
     pthread_exit(NULL);
@@ -82,7 +80,7 @@ void* pthreadGetBValues(void *arg) {
     static volatile uint32_t bCounter = 0;
     uint8_t numberInString[10] = {0};
     while(1){
-        while(handler->systemBuffer.isBufferFull()){
+        while(handler->systemBuffer.getLenght()){
             uint8_t character = handler->systemBuffer.getDataFromBuffer();    
             if(character == 'b'){
                 character = handler->systemBuffer.getDataFromBuffer();//---- "
@@ -97,7 +95,7 @@ void* pthreadGetBValues(void *arg) {
                 }
                 if( numberInString[0] >= '0' && numberInString[0] <= '9'){
                     uint32_t number = (uint32_t)strtoul((const char*)numberInString, NULL, 0 );
-                    handler->numbersBuffer.sendDatatoBuffer( sizeof(uint32_t), (uint8_t*)&number);
+                    handler->numbersBuffer.saveData( sizeof(uint32_t), (uint8_t*)&number);
                     memset(numberInString, 0x00, 11);
                     // cout<<"Number: "<<number<<endl;
                     bCounter++;

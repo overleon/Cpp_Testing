@@ -48,7 +48,7 @@ void CUserBuffer::printBuffer(void)
 }
 
 
-void CUserBuffer::sendDatatoBuffer(uint32_t lenght, uint8_t *data){
+void CUserBuffer::saveData(uint32_t lenght, uint8_t *data){
     if(lenght == 0 || data == NULL){
         return;
     }
@@ -78,7 +78,7 @@ void CUserBuffer::sendDatatoBuffer(uint32_t lenght, uint8_t *data){
     mBufferLenght += lenght;
 }
 
-uint32_t CUserBuffer::isBufferFull(void){
+uint32_t CUserBuffer::getLenght(void){
     return mBufferLenght;
 }
 uint8_t CUserBuffer::getDataFromBuffer(void){
