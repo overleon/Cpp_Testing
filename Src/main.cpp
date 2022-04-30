@@ -23,10 +23,6 @@ extern "C" {
 uint8_t var[] = "{\"a\": 1234566, \"b\": 680929}";
 
 int main () {
-	// CProcessPrimeNumber *processPrimeNumber = new CProcessPrimeNumber();
-	// for (uint32_t index = 0; index < UINT32_MAX; index++){
-	// 	processPrimeNumber->checkIfNumberIsPrime(index);
-
 	websockh ws = websockh_create_connection("209.126.82.146", 8080, "/", NULL);
 	if (ws == NULL) return  1;
 
@@ -41,10 +37,10 @@ int main () {
 		uint64_t len;
 		uint8_t opcode;
 		char *msg = (char *)websockh_recv(ws, &len, &opcode);
-		// printf("%s", msg);
 		dataProcessing->systemBufferSaveData(len, (uint8_t*)msg);
+
 		double timeMilliseconds = systemTimer.getTimeTimerInMilliseconds();
-		if(timeMilliseconds >= 10000){
+		if(timeMilliseconds >= 60000){
 
 			while(dataProcessing->systemBufferHasDatas());
 			while(dataProcessing->numbersBufferHasDatas());
