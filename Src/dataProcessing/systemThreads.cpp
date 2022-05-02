@@ -44,31 +44,13 @@ void CDataProcessing::createProcessNumberThread(){
     cout<<"Thread: Processing numbers --- created\n";
 } 
 
-
-uint32_t CDataProcessing::assembleNumber(void){
-    uint32_t number = 0;
-    uint32_t firstPart =     (uint32_t)mNumbersBuffer.getDataFromBuffer();
-    uint32_t secondPart =    (uint32_t)mNumbersBuffer.getDataFromBuffer();
-    uint32_t thirdPart =     (uint32_t)mNumbersBuffer.getDataFromBuffer();
-    uint32_t fourthPart =    (uint32_t)mNumbersBuffer.getDataFromBuffer();
-    number = number|fourthPart;
-    number = number<<8;
-    number = number|thirdPart;
-    number = number<<8;
-    number = number|secondPart;
-    number = number<<8;
-    number = number|firstPart;
-    return number;
-}
-
 void* pthreadProcessNumber(void *arg){
     CDataProcessing *handler = (CDataProcessing*)arg;
     while(1){
         while(handler->numbersBufferHasDatas()){
-            uint32_t number = handler->assembleNumber();
+            uint32_t number = handler->numberBufferGetData();
             handler->processNumber(number, handler->getCurrentBlock());
             handler->passToNextBlock();
-            // cout<<"Number: "<<handler->numbersBuffer.getLenght()<<endl;
         }
         usleep(100);
     }
@@ -96,7 +78,7 @@ void* pthreadGetBValues(void *arg) {
                 }
                 if( BNumberInString[0] >= '0' && BNumberInString[0] <= '9'){
                     uint32_t number = (uint32_t)strtoul((const char*)BNumberInString, NULL, 0 );
-                    handler->numberBufferSaveData( sizeof(uint32_t), (uint8_t*)&number);
+                    handler->numberBufferSaveData( number );
                     memset(BNumberInString, 0x00, 11);
                     bCounter++;
                 }
@@ -144,17 +126,20 @@ uint8_t CDataProcessing::systemBufferGetData(void){
 
 
 bool CDataProcessing::numbersBufferHasDatas(void){
-    if(mNumbersBuffer.getLenght()){
-        return true;
-    }else{
+    if(numberBuffer.empty()){
         return false;
+    }else{
+        return true;
     }
 }
 
-void CDataProcessing::numberBufferSaveData(uint32_t lenght, uint8_t* data){
-    mNumbersBuffer.saveData(lenght, data);
+void CDataProcessing::numberBufferSaveData(uint32_t number){
+    numberBuffer.push(number);
 }
 
-uint8_t CDataProcessing::numberBufferGetData(void){
-    return mNumbersBuffer.getDataFromBuffer();
+uint32_t CDataProcessing::numberBufferGetData(void){
+    uint32_t number = numberBuffer.front();
+    numberBuffer.pop();
+    return number;
+
 }

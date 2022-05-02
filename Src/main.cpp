@@ -19,19 +19,33 @@ extern "C" {
     #include "../Inc/websocket/websockh.h"
 }
 
-uint8_t var[] = "{\"a\": 1234566, \"b\": 680929}";
+#include <forward_list>
+void function(void){
+	CDataProcessing *dataProcessing = new CDataProcessing();	
+	// forward_list<uint32_t> myList;
+	// myList.
+	dataProcessing->createProcessNumberThread();
+	dataProcessing->numberBufferSaveData(1);
+	dataProcessing->numberBufferSaveData(2);
+	dataProcessing->numberBufferSaveData(3);
+	
+	cout<<"number: "<<dataProcessing->numberBufferGetData()<<endl;
+	cout<<"number: "<<dataProcessing->numberBufferGetData()<<endl;
+	cout<<"number: "<<dataProcessing->numberBufferGetData()<<endl;
+}
 
 int main () {
+	// function();
 	websockh ws = websockh_create_connection("209.126.82.146", 8080, "/", NULL);
 	if (ws == NULL) return  1;
 
 	CDataProcessing *dataProcessing = new CDataProcessing();	
-	dataProcessing->createParsingThread();
 	dataProcessing->createProcessNumberThread();
+	dataProcessing->createParsingThread();
 
 	CSystemTimer systemTimer;
-
 	systemTimer.startTimer();
+
 	while (1){
 		uint64_t len;
 		uint8_t opcode;
@@ -39,7 +53,7 @@ int main () {
 		dataProcessing->systemBufferSaveData(len, (uint8_t*)msg);
 
 		double timeMilliseconds = systemTimer.getTimeTimerInMilliseconds();
-		if(timeMilliseconds >= 60000){
+		if(timeMilliseconds >= 5000){
 
 			while(dataProcessing->systemBufferHasDatas());
 			while(dataProcessing->numbersBufferHasDatas());

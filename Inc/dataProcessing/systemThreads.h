@@ -9,11 +9,13 @@
 #include "primeNumbers.h"
 #include "processNumbers.h"
 #include "blocks.h"
+#include <queue>
 
 class CDataProcessing{
 	private:
 		CUserBuffer mSystemBuffer;
-		CUserBuffer mNumbersBuffer;
+		// CUserBuffer mNumbersBuffer;
+		queue<uint32_t> numberBuffer;
 		CProcessNumber 	mprocessNumber;
 		CBlock mblock[100];
 		CBlockHandler *blockHandler;
@@ -29,8 +31,8 @@ class CDataProcessing{
 		uint8_t systemBufferGetData(void);
 
 		bool numbersBufferHasDatas(void);
-		void numberBufferSaveData(uint32_t lenght, uint8_t* data);
-		uint8_t numberBufferGetData(void);
+		void numberBufferSaveData(uint32_t number);
+		uint32_t numberBufferGetData(void);
 
 		void processNumber(uint32_t number, CBlock* block);
 
