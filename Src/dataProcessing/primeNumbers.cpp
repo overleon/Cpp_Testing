@@ -4,6 +4,8 @@
 
 using namespace std;
 
+#define IGNORE_STORING_PRIME_NUMBERS 
+
 uint32_t CProcessPrimeNumber::binarySearch(uint32_t array[], uint32_t x, uint32_t low, uint32_t high) {
 	uint32_t mid;
 	while (low <= high) {
@@ -34,6 +36,7 @@ uint8_t CProcessPrimeNumber::checkIfNumberIsPrime(uint32_t numberToSearch){
 }
 
 void CProcessPrimeNumber::storePrimeNumbers(void){
+	#ifdef IGNORE_STORING_PRIME_NUMBERS
 	cout<<"Storing prime numbers from 0 to 2^32 ("<<UINT32_MAX<<")."<<endl;
 	primesieve::iterator it; 
 	uint64_t prime = 0;
@@ -42,4 +45,5 @@ void CProcessPrimeNumber::storePrimeNumbers(void){
 		primeNumbersArray[index++] = (uint32_t)prime;
 	}
 	cout<<"Finished prime numbers storing"<<endl;
+	#endif
 }

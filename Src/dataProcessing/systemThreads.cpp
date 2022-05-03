@@ -59,7 +59,7 @@ void* pthreadProcessNumber(void *arg){
 }
 
 uint64_t CSystemHandler::getNumber(void){
-    uint8_t BNumberInString[10] = {0};
+    uint8_t numberInString[10] = {0};
     uint8_t character = systemBufferGetData();//---- "
     uint32_t number;
     character = systemBufferGetData();//---- "
@@ -67,12 +67,12 @@ uint64_t CSystemHandler::getNumber(void){
     character = systemBufferGetData();//---- "
     unsigned char index = 0;//Variable to protect the system againt an infinity loop
     while((character >= '0' && character <= '9') && index < 10){
-        BNumberInString[index] = character; 
+        numberInString[index] = character; 
         character = systemBufferGetData();
         index++;
     }
-    if( BNumberInString[0] >= '0' && BNumberInString[0] <= '9'){
-        number = (uint32_t)strtoul((const char*)BNumberInString, NULL, 0 );
+    if( numberInString[0] >= '0' && numberInString[0] <= '9'){
+        number = (uint32_t)strtoul((const char*)numberInString, NULL, 0 );
         return number;
     }
     number = UINT32_MAX + 1; 

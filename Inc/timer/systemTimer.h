@@ -9,13 +9,14 @@
 
 class CSystemTimer{
     private:
-        double time_ms;
+        uint64_t time_ms;
         struct timeval ti, tf;
     public:
         CSystemTimer(){}
         void startTimer(void);
         void restartTimer(void);
-        double getTimeTimerInMilliseconds(void);
+        uint64_t getTimeTimerInMilliseconds(void);
+        bool hasPassedXTime(uint64_t time);
 
 };      
 
