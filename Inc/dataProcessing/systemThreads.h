@@ -11,7 +11,7 @@
 #include "blocks.h"
 #include <queue>
 
-class CDataProcessing{
+class CSystemHandler{
 	private:
 		
 		pthread_mutex_t systemQueueMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -22,7 +22,7 @@ class CDataProcessing{
 		queue<uint32_t> bNumberQueue;
 		queue<uint32_t> aNumberQueue;
 
-		CProcessNumber 	mprocessNumber;
+		CProcessNumber 	mProcessNumber;
 
 		CBlock mblock[100];
 		CBlockHandler *blockHandler;
@@ -30,8 +30,8 @@ class CDataProcessing{
 	public:
 		void createParsingThread();
 		void createProcessNumberThread();
-		CDataProcessing();
-		virtual ~CDataProcessing(){}
+		CSystemHandler();
+		virtual ~CSystemHandler(){}
 
 		bool systemBufferHasDatas(void);
 		void systemBufferSaveData(uint32_t lenght, uint8_t* data);

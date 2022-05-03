@@ -15,17 +15,17 @@
 
 using namespace std;
 
-void* pthreadGetBValues(void *arg);
+void* pthreadGetBAndAValues(void *arg);
 void* pthreadProcessNumber(void *arg);
 
-CDataProcessing::CDataProcessing(){
+CSystemHandler::CSystemHandler(){
     blockHandler = new CBlockHandler(mblock, 100);    
     blockHandler->clearAllTheBlocks();
 } 
 
-void CDataProcessing::createParsingThread(){
+void CSystemHandler::createParsingThread(){
     pthread_t thread;
-    int rc = pthread_create(&thread, NULL, pthreadGetBValues, (void*)this);
+    int rc = pthread_create(&thread, NULL, pthreadGetBAndAValues, (void*)this);
     if (rc) {
         cout << "Error:unable to create thread," << rc << endl;
         exit(-1);
@@ -33,7 +33,7 @@ void CDataProcessing::createParsingThread(){
     cout<<"Thread: Parsing data --- Created\n";
 } 
 
-void CDataProcessing::createProcessNumberThread(){
+void CSystemHandler::createProcessNumberThread(){
     pthread_t thread;
     int rc = pthread_create(&thread, NULL, pthreadProcessNumber, (void*)this);
     if (rc) {
@@ -44,7 +44,7 @@ void CDataProcessing::createProcessNumberThread(){
 } 
 
 void* pthreadProcessNumber(void *arg){
-    CDataProcessing *handler = (CDataProcessing*)arg;
+    CSystemHandler *handler = (CSystemHandler*)arg;
     static volatile uint32_t bCounter = 0;
     static volatile uint32_t aCounter = 0;
     while(1){
@@ -58,7 +58,7 @@ void* pthreadProcessNumber(void *arg){
     pthread_exit(NULL);
 }
 
-uint64_t CDataProcessing::getNumber(void){
+uint64_t CSystemHandler::getNumber(void){
     uint8_t BNumberInString[10] = {0};
     uint8_t character = systemBufferGetData();//---- "
     uint32_t number;
@@ -79,12 +79,13 @@ uint64_t CDataProcessing::getNumber(void){
     return number;
 }
 
-void* pthreadGetBValues(void *arg) {
-    CDataProcessing *handler = (CDataProcessing*)arg;
-    static volatile uint32_t bCounter = 0;
-    static volatile uint32_t aCounter = 0;
-    volatile uint32_t aNumber = 0;
-    volatile uint64_t bNumber = 0;
+void* pthreadGetBAndAValues(void *arg) {
+    CSystemHandler *handler = (CSystemHandler*)arg;
+    uint32_t bCounter = 0;
+    uint32_t aCounter = 0;
+
+    uint32_t aNumber = 0;
+    uint64_t bNumber = 0;
     
     uint8_t searchingForNumber = 0;
     uint8_t maximumCharactersForB = 0;
@@ -119,25 +120,25 @@ void* pthreadGetBValues(void *arg) {
     pthread_exit(NULL);
 }
 
-void CDataProcessing::showAllTheBlocksResult(void){
+void CSystemHandler::showAllTheBlocksResult(void){
     blockHandler->showBlocksResult();
 }
 
-void CDataProcessing::clearAllTheBlocks(void){
+void CSystemHandler::clearAllTheBlocks(void){
     blockHandler->clearAllTheBlocks();
 }
 
-CBlock* CDataProcessing::getBlock(uint8_t numberBlock){
+CBlock* CSystemHandler::getBlock(uint8_t numberBlock){
     return &mblock[numberBlock];
 }
 
-void CDataProcessing::processNumber(uint32_t number, CBlock* block){
-    mprocessNumber.processNumber(number, block);
+void CSystemHandler::processNumber(uint32_t number, CBlock* block){
+    mProcessNumber.processNumber(number, block);
 }
 
 
 
-bool CDataProcessing::systemBufferHasDatas(void){
+bool CSystemHandler::systemBufferHasDatas(void){
     if(systemQueue.empty()){
         return false;
     }else{
@@ -145,7 +146,7 @@ bool CDataProcessing::systemBufferHasDatas(void){
     }
 }
 
-void CDataProcessing::systemBufferSaveData(uint32_t lenght, uint8_t* data){
+void CSystemHandler::systemBufferSaveData(uint32_t lenght, uint8_t* data){
     if(lenght == 0 || data == NULL){
         return;
     }
@@ -156,7 +157,7 @@ void CDataProcessing::systemBufferSaveData(uint32_t lenght, uint8_t* data){
     pthread_mutex_unlock(&systemQueueMutex);
 }
 
-uint8_t CDataProcessing::systemBufferGetData(void){
+uint8_t CSystemHandler::systemBufferGetData(void){
     if(systemQueue.empty()){
         return 0;
     }
@@ -168,7 +169,7 @@ uint8_t CDataProcessing::systemBufferGetData(void){
 }
 
 
-bool CDataProcessing::bNumberBufferHasDatas(void){
+bool CSystemHandler::bNumberBufferHasDatas(void){
     if(bNumberQueue.empty()){
         return false;
     }else{
@@ -176,13 +177,13 @@ bool CDataProcessing::bNumberBufferHasDatas(void){
     }
 }
 
-void CDataProcessing::bNumberBufferSaveData(uint32_t number){
+void CSystemHandler::bNumberBufferSaveData(uint32_t number){
     pthread_mutex_lock(&bNumberQueueMutex);
     bNumberQueue.push(number);
     pthread_mutex_unlock(&bNumberQueueMutex);
 }
 
-uint32_t CDataProcessing::bNumberBufferGetData(void){
+uint32_t CSystemHandler::bNumberBufferGetData(void){
     if(bNumberQueue.empty()){
         return 0;
     }
@@ -193,7 +194,7 @@ uint32_t CDataProcessing::bNumberBufferGetData(void){
     return number;
 }
 
-bool CDataProcessing::aNumberBufferHasDatas(void){
+bool CSystemHandler::aNumberBufferHasDatas(void){
     if(aNumberQueue.empty()){
         return false;
     }else{
@@ -201,13 +202,13 @@ bool CDataProcessing::aNumberBufferHasDatas(void){
     }
 }
 
-void CDataProcessing::aNumberBufferSaveData(uint32_t number){
+void CSystemHandler::aNumberBufferSaveData(uint32_t number){
     pthread_mutex_lock(&aNumberQueueMutex);
     aNumberQueue.push(number);
     pthread_mutex_unlock(&aNumberQueueMutex);
 }
 
-uint32_t CDataProcessing::aNumberBufferGetData(void){
+uint32_t CSystemHandler::aNumberBufferGetData(void){
     if(aNumberQueue.empty()){
         return 0;
     }
