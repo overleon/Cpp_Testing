@@ -13,11 +13,17 @@
 
 class CDataProcessing{
 	private:
-		// CUserBuffer mSystemBuffer;
-		// CUserBuffer mNumbersBuffer;
-		queue<uint32_t> systemBuffer;
-		queue<uint32_t> numberBuffer;
+		
+		pthread_mutex_t systemQueueMutex = PTHREAD_MUTEX_INITIALIZER;
+		pthread_mutex_t bNumberQueueMutex = PTHREAD_MUTEX_INITIALIZER;
+		pthread_mutex_t aNumberQueueMutex = PTHREAD_MUTEX_INITIALIZER;
+
+		queue<uint32_t> systemQueue;
+		queue<uint32_t> bNumberQueue;
+		queue<uint32_t> aNumberQueue;
+
 		CProcessNumber 	mprocessNumber;
+
 		CBlock mblock[100];
 		CBlockHandler *blockHandler;
 		
@@ -31,15 +37,19 @@ class CDataProcessing{
 		void systemBufferSaveData(uint32_t lenght, uint8_t* data);
 		uint8_t systemBufferGetData(void);
 
-		bool numbersBufferHasDatas(void);
-		void numberBufferSaveData(uint32_t number);
-		uint32_t numberBufferGetData(void);
+		bool bNumberBufferHasDatas(void);
+		void bNumberBufferSaveData(uint32_t number);
+		uint32_t bNumberBufferGetData(void);
+
+		bool aNumberBufferHasDatas(void);
+		void aNumberBufferSaveData(uint32_t number);
+		uint32_t aNumberBufferGetData(void);
+
+		uint64_t getNumber(void);
 
 		void processNumber(uint32_t number, CBlock* block);
 
-		uint32_t assembleNumber(void);
-
-		CBlock* getCurrentBlock(void); 
+		CBlock* getBlock(uint8_t numberBlock); 
 		void passToNextBlock(void); 
 		void showAllTheBlocksResult(void);
 		void clearAllTheBlocks(void);

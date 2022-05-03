@@ -18,9 +18,6 @@ using namespace std;
 void* pthreadGetBValues(void *arg);
 void* pthreadProcessNumber(void *arg);
 
-pthread_mutex_t systemBufferMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t numberBufferMutex = PTHREAD_MUTEX_INITIALIZER;
-
 CDataProcessing::CDataProcessing(){
     blockHandler = new CBlockHandler(mblock, 100);    
     blockHandler->clearAllTheBlocks();
@@ -48,43 +45,73 @@ void CDataProcessing::createProcessNumberThread(){
 
 void* pthreadProcessNumber(void *arg){
     CDataProcessing *handler = (CDataProcessing*)arg;
+    static volatile uint32_t bCounter = 0;
+    static volatile uint32_t aCounter = 0;
     while(1){
-        while(handler->numbersBufferHasDatas()){
-            uint32_t number = handler->numberBufferGetData();
-            handler->processNumber(number, handler->getCurrentBlock());
-            handler->passToNextBlock();
+        while(handler->bNumberBufferHasDatas() && handler->aNumberBufferHasDatas()){
+            uint32_t aNumber = handler->aNumberBufferGetData();
+            uint32_t bNumber = handler->bNumberBufferGetData();
+            handler->processNumber(bNumber, handler->getBlock(aNumber));
         }
         usleep(100);
     }
     pthread_exit(NULL);
 }
 
+uint64_t CDataProcessing::getNumber(void){
+    uint8_t BNumberInString[10] = {0};
+    uint8_t character = systemBufferGetData();//---- "
+    uint32_t number;
+    character = systemBufferGetData();//---- "
+    character = systemBufferGetData();//---- "
+    character = systemBufferGetData();//---- "
+    unsigned char index = 0;//Variable to protect the system againt an infinity loop
+    while((character >= '0' && character <= '9') && index < 10){
+        BNumberInString[index] = character; 
+        character = systemBufferGetData();
+        index++;
+    }
+    if( BNumberInString[0] >= '0' && BNumberInString[0] <= '9'){
+        number = (uint32_t)strtoul((const char*)BNumberInString, NULL, 0 );
+        return number;
+    }
+    number = UINT32_MAX + 1; 
+    return number;
+}
+
 void* pthreadGetBValues(void *arg) {
     CDataProcessing *handler = (CDataProcessing*)arg;
     static volatile uint32_t bCounter = 0;
-    uint8_t BNumberInString[10] = {0};
-    uint8_t ANumberInString[3] = {0};
+    static volatile uint32_t aCounter = 0;
+    volatile uint32_t aNumber = 0;
+    volatile uint64_t bNumber = 0;
+    
+    uint8_t searchingForNumber = 0;
+    uint8_t maximumCharactersForB = 0;
+    uint64_t numberNotFound = UINT32_MAX + 1;
     while(1){
         while(handler->systemBufferHasDatas()){
             uint8_t character = handler->systemBufferGetData();    
-            if(character == 'b'){
-                character = handler->systemBufferGetData();//---- "
-                character = handler->systemBufferGetData();//---- "
-                character = handler->systemBufferGetData();//---- "
-                character = handler->systemBufferGetData();//---- "
-                unsigned char index = 0;//Variable to protect the system againt an infinity loop
-                while((character >= '0' && character <= '9') && index < 10){
-                    BNumberInString[index] = character; 
-                    character = handler->systemBufferGetData();
-                    index++;
+            if(character == 'a' && searchingForNumber == 0){
+                aNumber = handler->getNumber();
+                if(aNumber > 0 && aNumber<=100){
+                    searchingForNumber = 1;
+                    maximumCharactersForB = 0; 
+                    aCounter++;
                 }
-                if( BNumberInString[0] >= '0' && BNumberInString[0] <= '9'){
-                    uint32_t number = (uint32_t)strtoul((const char*)BNumberInString, NULL, 0 );
-                    handler->numberBufferSaveData( number );
-                    memset(BNumberInString, 0x00, 11);
+            }
+            if(character == 'b' && searchingForNumber == 1){
+                bNumber = handler->getNumber();
+                if(bNumber == numberNotFound){
+                }else{
+                    handler->aNumberBufferSaveData( --aNumber );
+                    handler->bNumberBufferSaveData( (uint32_t)bNumber );
                     bCounter++;
-                    cout<<"Number: "<<bCounter<<endl;
                 }
+                searchingForNumber = 0;
+            }
+            if(searchingForNumber == 1 && ++maximumCharactersForB == 6){
+                searchingForNumber = 0;
             }
         }
         usleep(100);
@@ -96,23 +123,22 @@ void CDataProcessing::showAllTheBlocksResult(void){
     blockHandler->showBlocksResult();
 }
 
-CBlock* CDataProcessing::getCurrentBlock(void){
-    return &mblock[blockHandler->getIndex()];
-}
-
 void CDataProcessing::clearAllTheBlocks(void){
     blockHandler->clearAllTheBlocks();
 }
 
-void CDataProcessing::passToNextBlock(void){
-    blockHandler->passToNextBlock();
+CBlock* CDataProcessing::getBlock(uint8_t numberBlock){
+    return &mblock[numberBlock];
 }
+
 void CDataProcessing::processNumber(uint32_t number, CBlock* block){
     mprocessNumber.processNumber(number, block);
 }
 
+
+
 bool CDataProcessing::systemBufferHasDatas(void){
-    if(systemBuffer.empty()){
+    if(systemQueue.empty()){
         return false;
     }else{
         return true;
@@ -123,47 +149,71 @@ void CDataProcessing::systemBufferSaveData(uint32_t lenght, uint8_t* data){
     if(lenght == 0 || data == NULL){
         return;
     }
-    pthread_mutex_lock(&systemBufferMutex);
+    pthread_mutex_lock(&systemQueueMutex);
     for(uint32_t index = 0; index < lenght; index++){
-        systemBuffer.push(data[index]);
+        systemQueue.push(data[index]);
     }
-    pthread_mutex_unlock(&systemBufferMutex);
+    pthread_mutex_unlock(&systemQueueMutex);
 }
 
 uint8_t CDataProcessing::systemBufferGetData(void){
-    if(systemBuffer.empty()){
+    if(systemQueue.empty()){
         return 0;
     }
-    pthread_mutex_lock(&systemBufferMutex);
-    uint8_t number = systemBuffer.front();
-    systemBuffer.pop();
-    pthread_mutex_unlock(&systemBufferMutex);
+    pthread_mutex_lock(&systemQueueMutex);
+    uint8_t number = systemQueue.front();
+    systemQueue.pop();
+    pthread_mutex_unlock(&systemQueueMutex);
     return number;
 }
 
 
-bool CDataProcessing::numbersBufferHasDatas(void){
-    if(numberBuffer.empty()){
+bool CDataProcessing::bNumberBufferHasDatas(void){
+    if(bNumberQueue.empty()){
         return false;
     }else{
         return true;
     }
 }
 
-void CDataProcessing::numberBufferSaveData(uint32_t number){
-    pthread_mutex_lock(&numberBufferMutex);
-    numberBuffer.push(number);
-    pthread_mutex_unlock(&numberBufferMutex);
+void CDataProcessing::bNumberBufferSaveData(uint32_t number){
+    pthread_mutex_lock(&bNumberQueueMutex);
+    bNumberQueue.push(number);
+    pthread_mutex_unlock(&bNumberQueueMutex);
 }
 
-uint32_t CDataProcessing::numberBufferGetData(void){
-    if(numberBuffer.empty()){
+uint32_t CDataProcessing::bNumberBufferGetData(void){
+    if(bNumberQueue.empty()){
         return 0;
     }
-    pthread_mutex_lock(&numberBufferMutex);
-    uint32_t number = numberBuffer.front();
-    numberBuffer.pop();
-    pthread_mutex_unlock(&numberBufferMutex);
+    pthread_mutex_lock(&bNumberQueueMutex);
+    uint32_t number = bNumberQueue.front();
+    bNumberQueue.pop();
+    pthread_mutex_unlock(&bNumberQueueMutex);
     return number;
+}
 
+bool CDataProcessing::aNumberBufferHasDatas(void){
+    if(aNumberQueue.empty()){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+void CDataProcessing::aNumberBufferSaveData(uint32_t number){
+    pthread_mutex_lock(&aNumberQueueMutex);
+    aNumberQueue.push(number);
+    pthread_mutex_unlock(&aNumberQueueMutex);
+}
+
+uint32_t CDataProcessing::aNumberBufferGetData(void){
+    if(aNumberQueue.empty()){
+        return 0;
+    }
+    pthread_mutex_lock(&aNumberQueueMutex);
+    uint32_t number = aNumberQueue.front();
+    aNumberQueue.pop();
+    pthread_mutex_unlock(&aNumberQueueMutex);
+    return number;
 }

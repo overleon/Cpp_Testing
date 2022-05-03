@@ -47,6 +47,8 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "condition_variable": "cpp",
-        "forward_list": "cpp"
+        "forward_list": "cpp",
+        "map": "cpp",
+        "set": "cpp"
     }
 }

@@ -47,14 +47,11 @@ class CBlock{
 
 class CBlockHandler{
 	private:
-		uint32_t blockIndex;
 		uint32_t size;
 		CBlock *handler;
 	public:
 		CBlockHandler(CBlock *blocks, uint32_t size);
 		void clearAllTheBlocks(void);
-		uint32_t getIndex(void);
-		void passToNextBlock(void);
 		void showBlocksResult(void);
 };
 

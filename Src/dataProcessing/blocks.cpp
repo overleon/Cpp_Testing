@@ -81,27 +81,23 @@ void CBlock::clearBlock(void){
 CBlockHandler::CBlockHandler(CBlock *blocks, uint32_t size){
     handler = blocks;
     this->size = size;
-    blockIndex = 0;
+    clearAllTheBlocks();
 }
 
 void CBlockHandler::showBlocksResult(void){
 	for(uint8_t index = 0; index < 100; index++){
-		cout<<"Maximum number: 	"<<handler[index].getMaximumNumber()<<endl;
-		cout<<"Minimum number: 	"<<handler[index].getMinimumNumber()<<endl;
-		cout<<"First number:   	"<<handler[index].getFirstNumber()<<endl;
-		cout<<"Last number:    	"<<handler[index].getLastNumber()<<endl;
-		cout<<"Number of primes: 	"<<handler[index].getNumberOfPrimes()<<endl;
-		cout<<"Number of evens: 	"<<handler[index].getNumberOfEvens()<<endl;
-		cout<<"Number of odds: 	"<<handler[index].getNumberOfOdds()<<endl;
-		cout<<"-----------------------------------------------"<<endl;
-	}
-}
+        // if(handler[index].getMinimumNumber() < UINT32_MAX){
 
-void CBlockHandler::passToNextBlock(void){
-    blockIndex++;
-    if(blockIndex == size){
-        blockIndex = 0;
-    }
+            cout<<"Maximum number: 	"<<handler[index].getMaximumNumber()<<endl;
+            cout<<"Minimum number: 	"<<handler[index].getMinimumNumber()<<endl;
+            cout<<"First number:   	"<<handler[index].getFirstNumber()<<endl;
+            cout<<"Last number:    	"<<handler[index].getLastNumber()<<endl;
+            cout<<"Number of primes: 	"<<handler[index].getNumberOfPrimes()<<endl;
+            cout<<"Number of evens: 	"<<handler[index].getNumberOfEvens()<<endl;
+            cout<<"Number of odds: 	"<<handler[index].getNumberOfOdds()<<endl;
+            cout<<"-----------------------------------------------"<<endl;
+        // }
+	}
 }
 
 void CBlockHandler::clearAllTheBlocks(void){
@@ -110,8 +106,4 @@ void CBlockHandler::clearAllTheBlocks(void){
         handler[index].setMinimumNumber(UINT32_MAX);
         handler[index].resetFirstNumberStatus();
     }
-}
-
-uint32_t CBlockHandler::getIndex(void){
-    return blockIndex;
 }
