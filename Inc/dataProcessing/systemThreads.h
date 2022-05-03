@@ -13,8 +13,9 @@
 
 class CDataProcessing{
 	private:
-		CUserBuffer mSystemBuffer;
+		// CUserBuffer mSystemBuffer;
 		// CUserBuffer mNumbersBuffer;
+		queue<uint32_t> systemBuffer;
 		queue<uint32_t> numberBuffer;
 		CProcessNumber 	mprocessNumber;
 		CBlock mblock[100];

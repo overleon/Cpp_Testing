@@ -18,6 +18,8 @@ using namespace std;
 void* pthreadGetBValues(void *arg);
 void* pthreadProcessNumber(void *arg);
 
+pthread_mutex_t systemBufferMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t numberBufferMutex = PTHREAD_MUTEX_INITIALIZER;
 
 CDataProcessing::CDataProcessing(){
     blockHandler = new CBlockHandler(mblock, 100);    
@@ -81,6 +83,7 @@ void* pthreadGetBValues(void *arg) {
                     handler->numberBufferSaveData( number );
                     memset(BNumberInString, 0x00, 11);
                     bCounter++;
+                    cout<<"Number: "<<bCounter<<endl;
                 }
             }
         }
@@ -109,19 +112,33 @@ void CDataProcessing::processNumber(uint32_t number, CBlock* block){
 }
 
 bool CDataProcessing::systemBufferHasDatas(void){
-    if(mSystemBuffer.getLenght()){
-        return true;
-    }else{
+    if(systemBuffer.empty()){
         return false;
+    }else{
+        return true;
     }
 }
 
 void CDataProcessing::systemBufferSaveData(uint32_t lenght, uint8_t* data){
-    mSystemBuffer.saveData(lenght, data);
+    if(lenght == 0 || data == NULL){
+        return;
+    }
+    pthread_mutex_lock(&systemBufferMutex);
+    for(uint32_t index = 0; index < lenght; index++){
+        systemBuffer.push(data[index]);
+    }
+    pthread_mutex_unlock(&systemBufferMutex);
 }
 
 uint8_t CDataProcessing::systemBufferGetData(void){
-    return mSystemBuffer.getDataFromBuffer();
+    if(systemBuffer.empty()){
+        return 0;
+    }
+    pthread_mutex_lock(&systemBufferMutex);
+    uint8_t number = systemBuffer.front();
+    systemBuffer.pop();
+    pthread_mutex_unlock(&systemBufferMutex);
+    return number;
 }
 
 
@@ -134,12 +151,19 @@ bool CDataProcessing::numbersBufferHasDatas(void){
 }
 
 void CDataProcessing::numberBufferSaveData(uint32_t number){
+    pthread_mutex_lock(&numberBufferMutex);
     numberBuffer.push(number);
+    pthread_mutex_unlock(&numberBufferMutex);
 }
 
 uint32_t CDataProcessing::numberBufferGetData(void){
+    if(numberBuffer.empty()){
+        return 0;
+    }
+    pthread_mutex_lock(&numberBufferMutex);
     uint32_t number = numberBuffer.front();
     numberBuffer.pop();
+    pthread_mutex_unlock(&numberBufferMutex);
     return number;
 
 }

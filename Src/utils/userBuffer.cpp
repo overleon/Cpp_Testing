@@ -36,7 +36,7 @@ void CUserBuffer::printBuffer(void)
 {
     if(mBufferHead->next != NULL){
         Node *n = mBufferHead;
-        int counter = 0;
+        int counter = 0;    
         while (n != NULL) {
             cout<<n->data;
             counter++;
