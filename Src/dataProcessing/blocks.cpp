@@ -86,8 +86,6 @@ CBlockHandler::CBlockHandler(CBlock *blocks, uint32_t size){
 
 void CBlockHandler::showBlocksResult(void){
 	for(uint8_t index = 0; index < 100; index++){
-        // if(handler[index].getMinimumNumber() < UINT32_MAX){
-
             cout<<"Maximum number: 	"<<handler[index].getMaximumNumber()<<endl;
             cout<<"Minimum number: 	"<<handler[index].getMinimumNumber()<<endl;
             cout<<"First number:   	"<<handler[index].getFirstNumber()<<endl;
@@ -96,7 +94,6 @@ void CBlockHandler::showBlocksResult(void){
             cout<<"Number of evens: 	"<<handler[index].getNumberOfEvens()<<endl;
             cout<<"Number of odds: 	"<<handler[index].getNumberOfOdds()<<endl;
             cout<<"-----------------------------------------------"<<endl;
-        // }
 	}
 }
 

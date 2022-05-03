@@ -33,17 +33,17 @@ class CSystemHandler{
 		CSystemHandler();
 		virtual ~CSystemHandler(){}
 
-		bool systemBufferHasDatas(void);
-		void systemBufferSaveData(uint32_t lenght, uint8_t* data);
-		uint8_t systemBufferGetData(void);
+		bool systemQueueHasDatas(void);
+		void systemQueueHasDatas(uint32_t lenght, uint8_t* data);
+		uint8_t systemQueueGetData(void);
 
-		bool bNumberBufferHasDatas(void);
-		void bNumberBufferSaveData(uint32_t number);
-		uint32_t bNumberBufferGetData(void);
+		bool bNumberQueueHasDatas(void);
+		void bNumberQueueHasDatas(uint32_t number);
+		uint32_t bNumberQueueGetData(void);
 
-		bool aNumberBufferHasDatas(void);
-		void aNumberBufferSaveData(uint32_t number);
-		uint32_t aNumberBufferGetData(void);
+		bool aNumberQueueHasDatas(void);
+		void aNumberQueueHasDatas(uint32_t number);
+		uint32_t aNumberQueueGetData(void);
 
 		uint64_t getNumber(void);
 

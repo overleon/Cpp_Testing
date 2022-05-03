@@ -20,7 +20,7 @@ extern "C" {
     #include "../Inc/websocket/websockh.h"
 }
 
-const uint64_t TIME_TO_SHOW_BLOCKS = 5000;
+const uint64_t TIME_TO_SHOW_BLOCKS = 60000;
 
 int main () {
 	websockh ws = websockh_create_connection("209.126.82.146", 8080, "/", NULL);
@@ -38,11 +38,11 @@ int main () {
 		uint8_t opcode;
 		char *msg = (char *)websockh_recv(ws, &len, &opcode);
 		// printf("%s\n", msg);
-		systemHandler->systemBufferSaveData(len, (uint8_t*)msg);
+		systemHandler->systemQueueHasDatas(len, (uint8_t*)msg);
 
 		if(systemTimer.hasPassedXTime(TIME_TO_SHOW_BLOCKS) == true){
-			while(systemHandler->systemBufferHasDatas());
-			while(systemHandler->bNumberBufferHasDatas() && systemHandler->aNumberBufferHasDatas());
+			while(systemHandler->systemQueueHasDatas());
+			while(systemHandler->bNumberQueueHasDatas() && systemHandler->aNumberQueueHasDatas());
 			systemHandler->showAllTheBlocksResult();
 			systemHandler->clearAllTheBlocks();
 			printf("Time milliseconds: %ld \n", systemTimer.getTimeTimerInMilliseconds());
